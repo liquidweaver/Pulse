@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/ico">
+        <file>PNG/pulse.png</file>
+        <file>PNG/64/Gnome-Preferences-Desktop-Remote-Desktop-64.png</file>
+        <file>PNG/64/Gnome-Emblem-Documents-64.png</file>
+        <file>PNG/64/Gnome-Document-Properties-64.png</file>
+    </qresource>
+</RCC>
