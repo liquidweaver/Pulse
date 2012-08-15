@@ -5,10 +5,9 @@
 #-------------------------------------------------
 
 QT       += core gui network
-
-TARGET = Pulse
 TEMPLATE = app
-RC_FILE = pulse.rc
+TARGET = Pulse
+
 
 
 SOURCES += main.cpp\
@@ -31,10 +30,19 @@ FORMS    += mainwindow.ui \
 RESOURCES += \
     Resources.qrc
 
-LIBS += \
-    -L$$PWD\\soci-3.1.0\\build\\lib \
-    -lsoci_core_3_1
+win32 {
+	RC_FILE = pulse.rc
+	LIBS += \
+		-L$$PWD\\soci-3.1.0\\build\\lib \
+		-lsoci_core_3_1
+}
 
+
+unix {
+	LIBS += \
+		$$PWD/soci-3.1.0/build/lib/libsoci_core.a \
+		$$PWD/soci-3.1.0/build/lib/libsoci_postgresql.a
+}
 OTHER_FILES += \
     pulse.rc \
     pulse.ico \

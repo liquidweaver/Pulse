@@ -129,8 +129,20 @@ void MainWindow::AddRecord( NameRecord& rec ) {
 
 void MainWindow::ZoneTransfer( const QString& zone_name, QList<NameRecord>& records  ) {
     QString SOA = GrabZoneSOA( zone_name );
+#ifdef Q_OS_WIN32
     QString axfr_result = RunExternal( tr("nslookup"), tr("server %0\nls -d %1\nquit\n").arg(SOA).arg(zone_name));
     QRegExp rr_rx("([\\._a-zA-Z\\d-]{1,63})\\s+((TXT)|(A))\\s+\"?([\\._a-zA-Z\\d -]{1,63})\"?");
+#else
+	QProcess process;
+	QStringList args;
+	args << "axfr" << zone_name << tr("@%0").arg(SOA);
+	process.start( tr("dig"), args );
+    if(!process.waitForFinished())
+        throw std::runtime_error( "GrabZoneSOA :dig never finished" );
+
+    QString axfr_result  = process.readAll();
+    QRegExp rr_rx("([\\._a-zA-Z\\d-]{1,63})\\s+\\d+\\s+IN\\s+((TXT)|(A))\\s+\"?([\\._a-zA-Z\\d -]{1,63})\"?");
+#endif
 
     int pos = rr_rx.indexIn(axfr_result, 0);
     while( pos != -1 ) {
@@ -149,10 +161,10 @@ void MainWindow::ZoneTransfer( const QString& zone_name, QList<NameRecord>& reco
 QString MainWindow::GrabZoneSOA( const QString& zone_name) {
     QString result = RunExternal( tr("nslookup"), tr("set type=SOA\n%0\nquit\n").arg(zone_name));
 
-    QRegExp pri_ns("primary name server\\s*=\\s*([^\\s\\r\\n]+)");
+    QRegExp pri_ns("((primary name server)|(origin))\\s*=\\s*([^\\s\\r\\n]+)");
     int pos = pri_ns.indexIn( result );
     if (pos > -1) {
-        return pri_ns.cap(1);
+        return pri_ns.cap(4);
     }
     else
         throw std::runtime_error( tr("SOA not found! Result string:\n%0").arg(result).toStdString() );
