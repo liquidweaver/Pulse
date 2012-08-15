@@ -23,9 +23,9 @@
 #include "soci-3.1.0/core/soci.h"
 #include "soci-3.1.0/core/error.h"
 #include "settings.h"
-#define ERROR_REFRESH_INTERVAL 20*1000
-#define ZONE_REFRESH_INTERVAL 6*60*60*1000
-#define TICKET_REFRESH_INTERVAL 3*60*1000
+#include "service.h"
+#include <QDateTime>
+#include "global_defines.h"
 
 typedef QPair<QString, QString> QStringPair;
 MainWindow::MainWindow(QWidget *parent) :
@@ -35,12 +35,25 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     QStandardItemModel* model = new QStandardItemModel();
     ui->treeView->setModel( model  );
-
+    int settings_version = LoadSetting("main/pulse_settings_serial").toInt();
+    if ( PULSE_SETTINGS_SERIAL != settings_version ) {
+        int ret = QMessageBox::warning(this, "Incompatible settings detected",
+                                          tr("Your settings are no longer compatible with "
+                                             "this version of Pulse. OK to load defaults?"),
+                                          QMessageBox::Abort | QMessageBox::Ok, QMessageBox::Abort );
+        if ( ret != QMessageBox::Ok ) {
+            throw std::runtime_error( "Incompatible settings" );
+        }
+        else {
+            LoadDefaultSettings();
+        }
+    }
     try{
         m_show_close_warning = true;
+
         //Set service handlers
-        QMap<QString, QString> services = LoadServices();
-        QMap<QString, QString>::const_iterator it;
+        QMap<QString, Service> services = LoadServices();
+        QMap<QString, Service>::const_iterator it;
         for (it = services.begin(); it != services.end(); it++ ) {
             QDesktopServices::setUrlHandler( it.key(), this, "service_url_handler");
         }
@@ -117,7 +130,6 @@ void MainWindow::AddRecord( NameRecord& rec ) {
 void MainWindow::ZoneTransfer( const QString& zone_name, QList<NameRecord>& records  ) {
     QString SOA = GrabZoneSOA( zone_name );
     QString axfr_result = RunExternal( tr("nslookup"), tr("server %0\nls -d %1\nquit\n").arg(SOA).arg(zone_name));
-    //QRegExp rr_rx("\\b([^A-Z\\r\\n]+)(\\s+(TXT)|(A)\\s+)([^\\n]+)\\n");
     QRegExp rr_rx("([\\._a-zA-Z\\d-]{1,63})\\s+((TXT)|(A))\\s+\"?([\\._a-zA-Z\\d -]{1,63})\"?");
 
     int pos = rr_rx.indexIn(axfr_result, 0);
@@ -169,7 +181,7 @@ void MainWindow::LoadZone() {
         QList<NameRecord> records;
         QMap<QString, QStringList> services;
         //TODO: Load zone from settings
-        QString zone = LoadSetting("dns_zone").toString();
+        QString zone = LoadSetting(SETTING_ZONE).toString();
         if ( zone.isNull() )
             throw std::runtime_error( "DNS Zone not set." );
         ZoneTransfer( zone, records);
@@ -234,16 +246,28 @@ void MainWindow::LoadTickets() {
     using soci::session;
     using std::string;
     try {
-        QString merp_host = LoadSetting( "merp_host" ).toString();
+        QString merp_host = LoadSetting( SETTING_MERP_HOST ).toString();
+        QString db_name = LoadSetting( SETTING_DB_NAME ).toString();
+        QString db_user = LoadSetting( SETTING_DB_USER ).toString();
+        QString db_pass = LoadSetting( SETTING_DB_PASS ).toString();
         if ( merp_host.isNull() )
             throw QString("MERP host not set.");
-        session sql( tr("postgresql://dbname=metropark host=%0 user=pulse password=tigerpaw10").arg(merp_host).toStdString() );
-        rowset<row> rs = (sql.prepare << "SELECT project_task.weight,crm_metro_helpdesk.ticket_no, project_task.name, res_users.name, res_partner.name "
-                                         "FROM crm_metro_helpdesk INNER JOIN project_task ON project_task.helpdesk_id = crm_metro_helpdesk.id "
-                                         "INNER JOIN res_users ON res_users.id = project_task.user_id INNER JOIN res_partner ON res_partner.id = project_task.partner_id "
-                                         "WHERE project_task.state = 'open' AND project_task.weight > "
-                                         "(SELECT value_integer FROM ir_property WHERE name = 'property_helpdesk_weight_hot_threshold')"
-                                         " ORDER BY project_task.weight DESC;");
+        else if ( db_name.isNull() )
+            throw QString( "Database name not set.");
+        else if ( db_user.isNull() )
+            throw QString( "Database user not set.");
+        else if ( db_pass.isNull() ) {
+            throw QString( "Database secret not set.");
+        }
+        session sql( tr("postgresql://dbname=%0 host=%1 user=%2 password=%3").arg(db_name).arg(merp_host).arg(db_user).arg(db_pass).toStdString() );
+        rowset<row> rs = (sql.prepare << "SELECT project_task.weight,crm_metro_helpdesk.ticket_no, project_task.name, res_users.name, res_partner.name, ru.name, project_task.worker_start_date "
+                                          "FROM crm_metro_helpdesk INNER JOIN project_task ON project_task.helpdesk_id = crm_metro_helpdesk.id "
+                                          "INNER JOIN res_users ON res_users.id = project_task.user_id INNER JOIN res_partner ON res_partner.id = project_task.partner_id "
+                                          "LEFT JOIN res_users as ru ON ru.id = project_task.worker_user_id "
+                                          "WHERE project_task.state = 'open' AND "
+                                          "project_task.weight > "
+                                          "    (SELECT value_integer FROM ir_property WHERE name = 'property_helpdesk_weight_hot_threshold') "
+                                          "ORDER BY project_task.weight DESC;");
         // iteration through the resultset:
         ui->tableWidget->clearContents();
         ui->tableWidget->setRowCount(0);
@@ -252,20 +276,36 @@ void MainWindow::LoadTickets() {
         {
             row const& row = *it;
             int priority;
-            string tech, description, ticket_id, customer_name;
+            string tech, description, ticket_id, customer_name, worker_name;
+            std::tm worker_start;
 
             // dynamic data extraction from each row:
+            time_t default_time_t = 0;
+            std::tm* default_tm = localtime( &default_time_t );
             priority = row.get<int>(0);
             ticket_id = row.get<string>(1);
             description = row.get<string>(2);
             tech = row.get<string>(3);
             customer_name = row.get<string>(4);
+            worker_name = row.get<string>(5, string("") );
+            worker_start = row.get<std::tm>(6, *default_tm );
+            qint64 mins = QDateTimeFromTM( worker_start ).msecsTo( QDateTime::currentDateTime() ) / 1000 / 60;
+            qint64 hours = mins / 60;
+            qint64 minutes = mins % 60;
+            QString duration;
+            if ( !worker_name.empty() ){
+                duration = (hours > 0)
+                                ? tr("%0:%1").arg(hours).arg(minutes)
+                                : tr("%0 minute(s)").arg(mins);
+            }
             ui->tableWidget->insertRow(row_id);
             ui->tableWidget->setItem(row_id, 0, new QTableWidgetItem( QString("%0").arg(priority) ) );
             ui->tableWidget->setItem(row_id, 1, new QTableWidgetItem( QString(ticket_id.c_str())));
             ui->tableWidget->setItem(row_id, 2, new QTableWidgetItem( QString(tech.c_str())));
-            ui->tableWidget->setItem(row_id, 3, new QTableWidgetItem( QString(customer_name.c_str())));
-            ui->tableWidget->setItem(row_id, 4, new QTableWidgetItem( QString(description.c_str())));
+            ui->tableWidget->setItem(row_id, 3, new QTableWidgetItem( QString(worker_name.c_str())));
+            ui->tableWidget->setItem(row_id, 4, new QTableWidgetItem( duration ) );
+            ui->tableWidget->setItem(row_id, 5, new QTableWidgetItem( QString(customer_name.c_str())));
+            ui->tableWidget->setItem(row_id, 6, new QTableWidgetItem( QString(description.c_str())));
             row_id++;
         }
         ui->lbl_tickets_error->hide();
@@ -292,9 +332,12 @@ void MainWindow::SetServiceLocation( const QString& service_name ) {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Where is the program to handle the %0 protocol?").arg(service_name),
                                                     QDesktopServices::storageLocation( QDesktopServices::ApplicationsLocation ),
                                                     tr("Program (*.exe)"));
+    //TODO: Open dialog?
     if (!fileName.isNull() ) {
-        QMap<QString, QString> services = LoadServices();
-        services[service_name] = fileName;
+        QMap<QString, Service> services = LoadServices();
+        services[service_name].name = service_name;
+        services[service_name].program_path = fileName;
+        services[service_name].argument_string = "#";
         SaveServices( services );
     }
 }
@@ -304,20 +347,22 @@ void MainWindow::service_link_handler(const QString &link) {
 }
 
 void MainWindow::service_url_handler( const QUrl& url ) {
-    QMap<QString, QString> services = LoadServices();
-    QMap<QString, QString>::const_iterator it_svc = services.find( url.scheme() );
+    QMap<QString, Service> services = LoadServices();
+    QMap<QString, Service>::const_iterator it_svc = services.find( url.scheme() );
     try {
         if ( it_svc != services.end() ) {
-            const QString& vnc_program( it_svc.value() );
+            const Service& svc = it_svc.value();
             QStringList arguments;
-            if (url.scheme() == "rdp" )
-                arguments << "/v:";
-            else if (url.scheme() == "smb")
-                arguments << "\\";
-            arguments << url.host();
-            bool started = QProcess::startDetached( vnc_program, arguments );
+            if ( svc.argument_string.contains('#') ) {
+                QString argstring = svc.argument_string;
+                arguments << argstring.replace( "#", url.host() ).split(' ');
+            }
+            else
+                arguments << url.host();
+
+            bool started = QProcess::startDetached( svc.program_path, arguments );
             if (!started)
-                throw QString("Could not start %0.").arg(vnc_program);
+                throw QString("Could not start %0.").arg(QDir::toNativeSeparators( svc.program_path ) );
         }
         else
             throw QString("I don't know how to handle the service \"%0.\"").arg(url.scheme());
@@ -361,30 +406,36 @@ QVariant MainWindow::LoadSetting(const QString &path) {
     return settings.value( path );
 }
 
-void MainWindow::SaveServices( const QMap<QString,QString>& service_map ) {
+void MainWindow::SaveServices( const QMap<QString, Service>& service_map ) {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope,
                             "metropark", "pulse");
     settings.beginWriteArray("services");
     int i = 0;
-    for ( QMap<QString, QString>::const_iterator svc = service_map.begin();
-          svc != service_map.end(); svc++ ) {
+    for ( QMap<QString, Service>::const_iterator svc_it = service_map.begin();
+          svc_it != service_map.end(); svc_it++ ) {
+        const Service& svc = svc_it.value();
         settings.setArrayIndex(i);
-        settings.setValue("protocol", svc.key());
-        settings.setValue("program", svc.value());
+        settings.setValue("name", svc.name );
+        settings.setValue("program_path", svc.program_path );
+        settings.setValue("argument_string", svc.argument_string );
         i++;
     }
 
     settings.endArray();
 }
 
-QMap<QString, QString> MainWindow::LoadServices() {
+  QMap<QString, Service> MainWindow::LoadServices() {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope,
                             "metropark", "pulse");
-    QMap<QString, QString> services;
+    QMap<QString, Service> services;
     int size = settings.beginReadArray( "services" );
     for (int i=0; i < size; i++ ) {
         settings.setArrayIndex(i);
-        services[settings.value("protocol").toString()] = settings.value("program").toString();
+        Service svc;
+        svc.name = settings.value("name").toString();
+        svc.program_path = settings.value("program_path").toString();
+        svc.argument_string = settings.value("argument_string").toString();
+        services[svc.name] = svc;
     }
     settings.endArray();
 
@@ -396,11 +447,15 @@ void MainWindow::Quit() {
 }
 
 void MainWindow::ShowSettings() {
-    Settings settings_window;
+    SettingsDialog settings_window;
     if ( QDialog::Accepted == settings_window.exec() ) {
         settings_window.SaveSettings();
         LoadZone(); LoadTickets();
     }
+}
+
+void MainWindow::ShowAbout() {
+    QMessageBox::about( this, "About Pulse", "Metropark Pulse\nVersion " PULSE_VERSION );
 }
 
 void MainWindow::TrayClicked(QSystemTrayIcon::ActivationReason reason) {
@@ -413,4 +468,37 @@ void MainWindow::showNormal() {
     QMainWindow::showNormal();
     this->activateWindow();
     this->raise();
+}
+
+QDateTime MainWindow::QDateTimeFromTM(std::tm& t ) {
+    QDateTime qdt;
+
+    qdt.setTime_t( mktime( &t ) );
+
+    return qdt;
+}
+
+void MainWindow::LoadDefaultSettings() {
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope,
+                            "metropark", "pulse");
+    settings.clear();
+    settings.setValue( SETTING_SERIAL, PULSE_SETTINGS_SERIAL );
+    settings.setValue( SETTING_ZONE, "customer.mp" );
+    settings.setValue( SETTING_MERP_HOST, "erp.mp" );
+    settings.setValue( SETTING_DB_NAME, "metropark" );
+    settings.setValue( SETTING_DB_USER, "pulse" );
+    settings.setValue( SETTING_DB_PASS, "tigerpaw10" );
+#ifdef Q_OS_WIN32
+    { const char* default_services[] = DEFAULT_SERVICES_WINDOWS;
+        settings.beginWriteArray("services");
+        for( int i=0, j=0; default_services[i] != NULL; i+=3, j++ ) {
+            settings.setArrayIndex(j);
+            settings.setValue( "name", default_services[i]);
+            settings.setValue( "argument_string", default_services[i+1]);
+            settings.setValue( "program_path", default_services[i+2]);
+        }
+        settings.endArray();
+    }
+
+#endif
 }

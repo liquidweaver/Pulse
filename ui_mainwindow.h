@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Mon Aug 13 11:55:01 2012
+** Created: Wed Aug 15 10:47:24 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -36,6 +36,7 @@ public:
     QAction *action_Quit;
     QAction *actionReload_Network;
     QAction *actionFont_Size;
+    QAction *actionAbout;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QSplitter *splitter;
@@ -71,6 +72,8 @@ public:
         actionReload_Network->setObjectName(QString::fromUtf8("actionReload_Network"));
         actionFont_Size = new QAction(MainWindow);
         actionFont_Size->setObjectName(QString::fromUtf8("actionFont_Size"));
+        actionAbout = new QAction(MainWindow);
+        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
@@ -93,6 +96,7 @@ public:
         treeView->setFrameShape(QFrame::Box);
         treeView->setFrameShadow(QFrame::Sunken);
         treeView->setAlternatingRowColors(true);
+        treeView->setSelectionMode(QAbstractItemView::NoSelection);
         treeView->setSelectionBehavior(QAbstractItemView::SelectItems);
         treeView->setIndentation(10);
         treeView->setAnimated(true);
@@ -116,8 +120,8 @@ public:
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         tableWidget = new QTableWidget(groupBox_2);
-        if (tableWidget->columnCount() < 5)
-            tableWidget->setColumnCount(5);
+        if (tableWidget->columnCount() < 7)
+            tableWidget->setColumnCount(7);
         QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
         tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
         QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
@@ -128,12 +132,16 @@ public:
         tableWidget->setHorizontalHeaderItem(3, __qtablewidgetitem3);
         QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
         tableWidget->setHorizontalHeaderItem(4, __qtablewidgetitem4);
+        QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(5, __qtablewidgetitem5);
+        QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(6, __qtablewidgetitem6);
         tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
         tableWidget->setStyleSheet(QString::fromUtf8("background-image: url(:/ico/PNG/64/Gnome-Emblem-Documents-64.png);\n"
 "background-repeat:no-repeat;\n"
 "background-attachment:fixed;\n"
 "background-position:bottom right; \n"
-"text-align:left; "));
+"text-align:left;"));
         tableWidget->setFrameShape(QFrame::Box);
         tableWidget->setLineWidth(0);
         tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -174,11 +182,13 @@ public:
         menuFile->addAction(action_Quit);
         menuFile->addSeparator();
         menuFile->addAction(actionReload_Network);
+        menuFile->addAction(actionAbout);
 
         retranslateUi(MainWindow);
         QObject::connect(actionSettings, SIGNAL(triggered()), MainWindow, SLOT(ShowSettings()));
         QObject::connect(action_Quit, SIGNAL(triggered()), MainWindow, SLOT(Quit()));
         QObject::connect(actionReload_Network, SIGNAL(triggered()), MainWindow, SLOT(LoadZone()));
+        QObject::connect(actionAbout, SIGNAL(triggered()), MainWindow, SLOT(ShowAbout()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -190,21 +200,26 @@ public:
         action_Quit->setText(QApplication::translate("MainWindow", "&Quit", 0, QApplication::UnicodeUTF8));
         actionReload_Network->setText(QApplication::translate("MainWindow", "Reload Network", 0, QApplication::UnicodeUTF8));
         actionFont_Size->setText(QApplication::translate("MainWindow", "Font Size", 0, QApplication::UnicodeUTF8));
+        actionAbout->setText(QApplication::translate("MainWindow", "About...", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QApplication::translate("MainWindow", "Network", 0, QApplication::UnicodeUTF8));
         lbl_zone_error->setText(QApplication::translate("MainWindow", "Loading...", 0, QApplication::UnicodeUTF8));
-        groupBox_2->setTitle(QApplication::translate("MainWindow", "Tickets", 0, QApplication::UnicodeUTF8));
+        groupBox_2->setTitle(QApplication::translate("MainWindow", "Hot Tickets", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "Priority", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
         ___qtablewidgetitem1->setText(QApplication::translate("MainWindow", "Ticket", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("MainWindow", "Tech", 0, QApplication::UnicodeUTF8));
+        ___qtablewidgetitem2->setText(QApplication::translate("MainWindow", "Owned By", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(3);
-        ___qtablewidgetitem3->setText(QApplication::translate("MainWindow", "Customer", 0, QApplication::UnicodeUTF8));
+        ___qtablewidgetitem3->setText(QApplication::translate("MainWindow", "Working", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem4 = tableWidget->horizontalHeaderItem(4);
-        ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "Ticket Description", 0, QApplication::UnicodeUTF8));
+        ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "Worked Time", 0, QApplication::UnicodeUTF8));
+        QTableWidgetItem *___qtablewidgetitem5 = tableWidget->horizontalHeaderItem(5);
+        ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "Customer", 0, QApplication::UnicodeUTF8));
+        QTableWidgetItem *___qtablewidgetitem6 = tableWidget->horizontalHeaderItem(6);
+        ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "Ticket Description", 0, QApplication::UnicodeUTF8));
         lbl_tickets_error->setText(QApplication::translate("MainWindow", "Loading...", 0, QApplication::UnicodeUTF8));
-        menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
+        menuFile->setTitle(QApplication::translate("MainWindow", "System", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

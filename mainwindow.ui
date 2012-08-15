@@ -52,6 +52,9 @@ qradialgradient(spread:repeat, cx:0.5, cy:0.5, radius:0.077, fx:0.5, fy:0.5, sto
           <property name="alternatingRowColors">
            <bool>true</bool>
           </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::NoSelection</enum>
+          </property>
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectItems</enum>
           </property>
@@ -80,7 +83,7 @@ qradialgradient(spread:repeat, cx:0.5, cy:0.5, radius:0.077, fx:0.5, fy:0.5, sto
       </widget>
       <widget class="QGroupBox" name="groupBox_2">
        <property name="title">
-        <string>Tickets</string>
+        <string>Hot Tickets</string>
        </property>
        <property name="flat">
         <bool>true</bool>
@@ -96,7 +99,7 @@ qradialgradient(spread:repeat, cx:0.5, cy:0.5, radius:0.077, fx:0.5, fy:0.5, sto
 background-repeat:no-repeat;
 background-attachment:fixed;
 background-position:bottom right; 
-text-align:left; </string>
+text-align:left;</string>
           </property>
           <property name="frameShape">
            <enum>QFrame::Box</enum>
@@ -131,7 +134,17 @@ text-align:left; </string>
           </column>
           <column>
            <property name="text">
-            <string>Tech</string>
+            <string>Owned By</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Working</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Worked Time</string>
            </property>
           </column>
           <column>
@@ -179,12 +192,13 @@ text-align:left; </string>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>System</string>
     </property>
     <addaction name="actionSettings"/>
     <addaction name="action_Quit"/>
     <addaction name="separator"/>
     <addaction name="actionReload_Network"/>
+    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -207,6 +221,11 @@ text-align:left; </string>
   <action name="actionFont_Size">
    <property name="text">
     <string>Font Size</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About...</string>
    </property>
   </action>
  </widget>
@@ -263,11 +282,28 @@ text-align:left; </string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionAbout</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>ShowAbout()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>483</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>LoadTickets()</slot>
   <slot>ShowSettings()</slot>
   <slot>LoadZone()</slot>
   <slot>Quit()</slot>
+  <slot>ShowAbout()</slot>
  </slots>
 </ui>

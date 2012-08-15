@@ -4,19 +4,22 @@
 #include <QTreeWidget>
 #include <QDebug>
 #include <QtSql/QtSql>
+#include <QMessageBox>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-    QCoreApplication::setOrganizationName("metropark");
-    QCoreApplication::setOrganizationDomain("metropark.com");
-    QCoreApplication::setApplicationName("pulse");
-    w.show();
+    try {
+        MainWindow w;
+        QCoreApplication::setOrganizationName("metropark");
+        QCoreApplication::setOrganizationDomain("metropark.com");
+        QCoreApplication::setApplicationName("pulse");
+        w.show();
 
-//    QSplitter qsplitter(Qt::Vertical);
-//    QTreeWidget* zone = new QTreeWidget();
-//    qsplitter.addWidget(zone);
-//    qsplitter.show();
-    return a.exec();
+        return a.exec();
+    }
+    catch ( std::exception& e ) {
+        QMessageBox::critical( NULL, "Error", e.what(), QMessageBox::Ok );
+        return 1;
+    }
 }
