@@ -362,15 +362,16 @@ void MainWindow::LoadTechs() {
             throw QString( "Database secret not set.");
         }
         session sql( tr("postgresql://dbname=%0 host=%1 user=%2 password=%3").arg(db_name).arg(merp_host).arg(db_user).arg(db_pass).toStdString() );
-        rowset<row> rs = (sql.prepare << "SELECT u.name, t.name, t.wstart "
+        rowset<row> rs = (sql.prepare << "SELECT u.name, t.name, p.name, t.weight, t.wstart "
                           "FROM public.res_users u "
                           "INNER JOIN res_groups_users_rel ON res_groups_users_rel.uid = u.id "
                           "INNER JOIN res_groups g ON "
                           "    g.id = res_groups_users_rel.gid AND g.name = 'Pulse' "
                           "INNER JOIN "
-                          "    (SELECT worker_user_id, id, name, worker_start_date wstart FROM project_task "
+                          "    (SELECT worker_user_id, id, name, weight, partner_id, worker_start_date wstart FROM project_task "
                           "    WHERE worker_user_id IS NOT NULL AND state='open' ) t "
                           "    ON t.worker_user_id = u.id "
+                          "INNER JOIN res_partner p ON p.id = t.partner_id "
                           "ORDER BY t.wstart ASC");
         // iteration through the resultset:
         ui->table_techs->clearContents();
@@ -379,7 +380,8 @@ void MainWindow::LoadTechs() {
         for (rowset<row>::const_iterator it = rs.begin(); it != rs.end(); ++it)
         {
             row const& row = *it;
-            string tech, description;
+            int priority;
+            string tech, description, customer_name;
             std::tm worker_start;
 
             // dynamic data extraction from each row:
@@ -388,21 +390,24 @@ void MainWindow::LoadTechs() {
 
             tech = row.get<string>(0);
             description = row.get<string>(1,"");
-            worker_start = row.get<std::tm>(2, *default_tm );
+            customer_name = row.get<string>(2);
+            priority = row.get<int>(3);
+            worker_start = row.get<std::tm>(4, *default_tm );
 
             qint64 mins = QDateTimeFromTM( worker_start ).msecsTo( QDateTime::currentDateTime() ) / 1000 / 60;
             qint64 hours = mins / 60;
             qint64 minutes = mins % 60;
             QString duration;
-            if ( !description.empty() ) {
-                duration = (hours > 0)
-                                ? tr("%0:%1").arg(hours).arg(minutes)
-                                : tr("%0 minute(s)").arg(mins);
-            }
+            duration = (hours > 0)
+                            ? tr("%0:%1").arg(hours).arg(minutes)
+                            : tr("%0 minute(s)").arg(mins);
+
             ui->table_techs->insertRow(row_id);
             ui->table_techs->setItem(row_id, 0, new QTableWidgetItem( QString(tech.c_str())));
-            ui->table_techs->setItem(row_id, 2, new QTableWidgetItem( QString(description.c_str())));
-            ui->table_techs->setItem(row_id, 1, new QTableWidgetItem( duration ) );
+            ui->table_techs->setItem(row_id, 1, new QTableWidgetItem( QString("%0").arg(priority) ) );
+            ui->table_techs->setItem(row_id, 2, new QTableWidgetItem( duration ) );
+            ui->table_techs->setItem(row_id, 5, new QTableWidgetItem( QString(customer_name.c_str())));
+            ui->table_techs->setItem(row_id, 4, new QTableWidgetItem( QString(description.c_str())));
             row_id++;
         }
         ui->lbl_techs_error->hide();

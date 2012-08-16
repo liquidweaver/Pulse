@@ -27,12 +27,6 @@ qradialgradient(spread:repeat, cx:0.5, cy:0.5, radius:0.077, fx:0.5, fy:0.5, sto
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QGroupBox" name="groupBox_2">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
       <property name="font">
        <font>
         <weight>75</weight>
@@ -48,12 +42,6 @@ qradialgradient(spread:repeat, cx:0.5, cy:0.5, radius:0.077, fx:0.5, fy:0.5, sto
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QTableWidget" name="table_tickets">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="styleSheet">
           <string notr="true">QTableWidget {background-image: url(:/ico/PNG/64/Gnome-Emblem-Documents-64.png);
 background-repeat:no-repeat;
@@ -121,12 +109,6 @@ text-align:left;}</string>
        </item>
        <item>
         <widget class="QLabel" name="lbl_tickets_error">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="font">
           <font>
            <weight>50</weight>
@@ -180,7 +162,7 @@ text-align:left;}</string>
     <set>QDockWidget::DockWidgetFeatureMask</set>
    </property>
    <attribute name="dockWidgetArea">
-    <number>8</number>
+    <number>2</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -244,7 +226,7 @@ text-align:left;}</string>
    <property name="minimumSize">
     <size>
      <width>400</width>
-     <height>163</height>
+     <height>188</height>
     </size>
    </property>
    <property name="features">
@@ -301,7 +283,17 @@ text-align:left;}</string>
           </column>
           <column>
            <property name="text">
+            <string>Priority</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
             <string>Time Worked</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Customer</string>
            </property>
           </column>
           <column>

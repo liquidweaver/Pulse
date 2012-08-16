@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Thu Aug 16 16:43:18 2012
+** Created: Thu Aug 16 17:54:23 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -114,11 +114,6 @@ public:
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         groupBox_2 = new QGroupBox(centralWidget);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
-        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(groupBox_2->sizePolicy().hasHeightForWidth());
-        groupBox_2->setSizePolicy(sizePolicy);
         QFont font;
         font.setBold(true);
         font.setWeight(75);
@@ -146,8 +141,6 @@ public:
         QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
         table_tickets->setHorizontalHeaderItem(6, __qtablewidgetitem6);
         table_tickets->setObjectName(QString::fromUtf8("table_tickets"));
-        sizePolicy.setHeightForWidth(table_tickets->sizePolicy().hasHeightForWidth());
-        table_tickets->setSizePolicy(sizePolicy);
         table_tickets->setStyleSheet(QString::fromUtf8("QTableWidget {background-image: url(:/ico/PNG/64/Gnome-Emblem-Documents-64.png);\n"
 "background-repeat:no-repeat;\n"
 "background-attachment:fixed;\n"
@@ -165,8 +158,6 @@ public:
 
         lbl_tickets_error = new QLabel(groupBox_2);
         lbl_tickets_error->setObjectName(QString::fromUtf8("lbl_tickets_error"));
-        sizePolicy.setHeightForWidth(lbl_tickets_error->sizePolicy().hasHeightForWidth());
-        lbl_tickets_error->setSizePolicy(sizePolicy);
         QFont font1;
         font1.setBold(false);
         font1.setWeight(50);
@@ -226,10 +217,10 @@ public:
         verticalLayout_4->addWidget(groupBox);
 
         dock_network_browser->setWidget(dockWidgetContents);
-        MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(8), dock_network_browser);
+        MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dock_network_browser);
         dock_techs = new QDockWidget(MainWindow);
         dock_techs->setObjectName(QString::fromUtf8("dock_techs"));
-        dock_techs->setMinimumSize(QSize(400, 163));
+        dock_techs->setMinimumSize(QSize(400, 188));
         dock_techs->setFeatures(QDockWidget::AllDockWidgetFeatures);
         dockWidgetContents_2 = new QWidget();
         dockWidgetContents_2->setObjectName(QString::fromUtf8("dockWidgetContents_2"));
@@ -245,14 +236,18 @@ public:
         verticalLayout_6->setContentsMargins(11, 11, 11, 11);
         verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
         table_techs = new QTableWidget(groupBox_3);
-        if (table_techs->columnCount() < 3)
-            table_techs->setColumnCount(3);
+        if (table_techs->columnCount() < 5)
+            table_techs->setColumnCount(5);
         QTableWidgetItem *__qtablewidgetitem7 = new QTableWidgetItem();
         table_techs->setHorizontalHeaderItem(0, __qtablewidgetitem7);
         QTableWidgetItem *__qtablewidgetitem8 = new QTableWidgetItem();
         table_techs->setHorizontalHeaderItem(1, __qtablewidgetitem8);
         QTableWidgetItem *__qtablewidgetitem9 = new QTableWidgetItem();
         table_techs->setHorizontalHeaderItem(2, __qtablewidgetitem9);
+        QTableWidgetItem *__qtablewidgetitem10 = new QTableWidgetItem();
+        table_techs->setHorizontalHeaderItem(3, __qtablewidgetitem10);
+        QTableWidgetItem *__qtablewidgetitem11 = new QTableWidgetItem();
+        table_techs->setHorizontalHeaderItem(4, __qtablewidgetitem11);
         table_techs->setObjectName(QString::fromUtf8("table_techs"));
         table_techs->setStyleSheet(QString::fromUtf8("QTableWidget {background-image: url(:/ico/PNG/64/Gnome-System-Users-64.png);\n"
 "background-repeat:no-repeat;\n"
@@ -335,9 +330,13 @@ public:
         QTableWidgetItem *___qtablewidgetitem7 = table_techs->horizontalHeaderItem(0);
         ___qtablewidgetitem7->setText(QApplication::translate("MainWindow", "Tech", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem8 = table_techs->horizontalHeaderItem(1);
-        ___qtablewidgetitem8->setText(QApplication::translate("MainWindow", "Time Worked", 0, QApplication::UnicodeUTF8));
+        ___qtablewidgetitem8->setText(QApplication::translate("MainWindow", "Priority", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem9 = table_techs->horizontalHeaderItem(2);
-        ___qtablewidgetitem9->setText(QApplication::translate("MainWindow", "Ticket Working", 0, QApplication::UnicodeUTF8));
+        ___qtablewidgetitem9->setText(QApplication::translate("MainWindow", "Time Worked", 0, QApplication::UnicodeUTF8));
+        QTableWidgetItem *___qtablewidgetitem10 = table_techs->horizontalHeaderItem(3);
+        ___qtablewidgetitem10->setText(QApplication::translate("MainWindow", "Customer", 0, QApplication::UnicodeUTF8));
+        QTableWidgetItem *___qtablewidgetitem11 = table_techs->horizontalHeaderItem(4);
+        ___qtablewidgetitem11->setText(QApplication::translate("MainWindow", "Ticket Working", 0, QApplication::UnicodeUTF8));
         lbl_techs_error->setText(QApplication::translate("MainWindow", "Loading...", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
