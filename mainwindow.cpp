@@ -74,19 +74,22 @@ MainWindow::MainWindow(QWidget *parent) :
         connect( m_tray_icon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(TrayClicked(QSystemTrayIcon::ActivationReason)) );
         connect( &m_ticket_timer, SIGNAL(timeout()), this, SLOT(LoadTickets()));
         connect( &m_zone_timer, SIGNAL(timeout()), this, SLOT(LoadZone()));
+        connect( &m_techs_timer, SIGNAL(timeout()), this, SLOT(LoadTechs()));
         m_ticket_timer.start( TICKET_REFRESH_INTERVAL );
         m_zone_timer.start( ZONE_REFRESH_INTERVAL );
-        QSplitterHandle *handle = ui->splitter->handle(1);
-        QVBoxLayout *layout = new QVBoxLayout(handle);
-        layout->setSpacing(0);
-        layout->setMargin(0);
+        m_techs_timer.start( TECH_REFRESH_INTERVAL );
+        //QSplitterHandle *handle = ui->splitter->handle(1);
+        //QVBoxLayout *layout = new QVBoxLayout(handle);
+        //layout->setSpacing(0);
+        //layout->setMargin(0);
 
-        QFrame *line = new QFrame(handle);
-        line->setFrameShape(QFrame::Panel);
-        line->setFrameShadow(QFrame::Raised);
-        layout->addWidget(line);
+        //QFrame *line = new QFrame(handle);
+        //line->setFrameShape(QFrame::Panel);
+        //line->setFrameShadow(QFrame::Raised);
+        //layout->addWidget(line);
         LoadZone();
         LoadTickets();
+        LoadTechs();
     }
     catch ( std::runtime_error& except ) {
         qDebug() << except.what();
@@ -225,7 +228,6 @@ void MainWindow::LoadZone() {
                 foreach( QString service, i.value()) {
                     QLabel *new_link = new QLabel( tr("<a href=\"%0://%1\">%0</a>").arg(service.toLower()).arg(i.key()) );
                     layout->addWidget(new_link);
-                    //new_link->setOpenExternalLinks( true );
                     connect( new_link, SIGNAL(linkActivated(QString)), this, SLOT(service_link_handler(QString)));
                 }
                 const QStandardItem * this_cell = results[0];
@@ -281,8 +283,8 @@ void MainWindow::LoadTickets() {
                                           "    (SELECT value_integer FROM ir_property WHERE name = 'property_helpdesk_weight_hot_threshold') "
                                           "ORDER BY project_task.weight DESC;");
         // iteration through the resultset:
-        ui->tableWidget->clearContents();
-        ui->tableWidget->setRowCount(0);
+        ui->table_tickets->clearContents();
+        ui->table_tickets->setRowCount(0);
         int row_id=0;
         for (rowset<row>::const_iterator it = rs.begin(); it != rs.end(); ++it)
         {
@@ -310,33 +312,114 @@ void MainWindow::LoadTickets() {
                                 ? tr("%0:%1").arg(hours).arg(minutes)
                                 : tr("%0 minute(s)").arg(mins);
             }
-            ui->tableWidget->insertRow(row_id);
-            ui->tableWidget->setItem(row_id, 0, new QTableWidgetItem( QString("%0").arg(priority) ) );
-            ui->tableWidget->setItem(row_id, 1, new QTableWidgetItem( QString(ticket_id.c_str())));
-            ui->tableWidget->setItem(row_id, 2, new QTableWidgetItem( QString(tech.c_str())));
-            ui->tableWidget->setItem(row_id, 3, new QTableWidgetItem( QString(worker_name.c_str())));
-            ui->tableWidget->setItem(row_id, 4, new QTableWidgetItem( duration ) );
-            ui->tableWidget->setItem(row_id, 5, new QTableWidgetItem( QString(customer_name.c_str())));
-            ui->tableWidget->setItem(row_id, 6, new QTableWidgetItem( QString(description.c_str())));
+            ui->table_tickets->insertRow(row_id);
+            ui->table_tickets->setItem(row_id, 0, new QTableWidgetItem( QString("%0").arg(priority) ) );
+            ui->table_tickets->setItem(row_id, 1, new QTableWidgetItem( QString(ticket_id.c_str())));
+            ui->table_tickets->setItem(row_id, 2, new QTableWidgetItem( QString(tech.c_str())));
+            ui->table_tickets->setItem(row_id, 3, new QTableWidgetItem( QString(worker_name.c_str())));
+            ui->table_tickets->setItem(row_id, 4, new QTableWidgetItem( duration ) );
+            ui->table_tickets->setItem(row_id, 5, new QTableWidgetItem( QString(customer_name.c_str())));
+            ui->table_tickets->setItem(row_id, 6, new QTableWidgetItem( QString(description.c_str())));
             row_id++;
         }
         ui->lbl_tickets_error->hide();
-        ui->tableWidget->show();
+        ui->table_tickets->show();
         m_ticket_timer.setInterval( TICKET_REFRESH_INTERVAL );
         if ( row_id > 0 )
-            m_tray_icon->showMessage( "Pulse - New Hot Tickets", tr("Pulse has discovered %0 active hot tickets!").arg( row_id ), QSystemTrayIcon::Warning );
+            m_tray_icon->showMessage( "Pulse - Hot Tickets", tr("Pulse has discovered %0 active hot tickets!").arg( row_id ), QSystemTrayIcon::Warning );
     }
     catch ( soci::soci_error& error) {
-        ui->tableWidget->hide();
+        ui->table_tickets->hide();
         ui->lbl_tickets_error->setText( tr( "An error occured while fetching ticket information. Retrying in %0 seconds. Error information:<hr><div style=\"font-weight: bold; margin-left: 16px;\">%1</div>" ).arg(ERROR_REFRESH_INTERVAL / 1000).arg( error.what() ) );
         ui->lbl_tickets_error->show();
         m_ticket_timer.setInterval( ERROR_REFRESH_INTERVAL );
     }
     catch ( QString& error ) {
-        ui->tableWidget->hide();
+        ui->table_tickets->hide();
         ui->lbl_tickets_error->setText( tr( "An error occured while fetching ticket information. Retrying in %0 seconds. Error information:<hr><div style=\"font-weight: bold; margin-left: 16px;\">%1</div>" ).arg(ERROR_REFRESH_INTERVAL / 1000).arg( error ) );
         ui->lbl_tickets_error->show();
         m_ticket_timer.setInterval( ERROR_REFRESH_INTERVAL );
+    }
+}
+
+void MainWindow::LoadTechs() {
+    using soci::row;
+    using soci::rowset;
+    using soci::session;
+    using std::string;
+    try {
+        QString merp_host = LoadSetting( SETTING_MERP_HOST ).toString();
+        QString db_name = LoadSetting( SETTING_DB_NAME ).toString();
+        QString db_user = LoadSetting( SETTING_DB_USER ).toString();
+        QString db_pass = LoadSetting( SETTING_DB_PASS ).toString();
+        if ( merp_host.isNull() )
+            throw QString("MERP host not set.");
+        else if ( db_name.isNull() )
+            throw QString( "Database name not set.");
+        else if ( db_user.isNull() )
+            throw QString( "Database user not set.");
+        else if ( db_pass.isNull() ) {
+            throw QString( "Database secret not set.");
+        }
+        session sql( tr("postgresql://dbname=%0 host=%1 user=%2 password=%3").arg(db_name).arg(merp_host).arg(db_user).arg(db_pass).toStdString() );
+        rowset<row> rs = (sql.prepare << "SELECT u.name, t.name, t.wstart "
+                          "FROM public.res_users u "
+                          "INNER JOIN res_groups_users_rel ON res_groups_users_rel.uid = u.id "
+                          "INNER JOIN res_groups g ON "
+                          "    g.id = res_groups_users_rel.gid AND g.name = 'Pulse' "
+                          "INNER JOIN "
+                          "    (SELECT worker_user_id, id, name, worker_start_date wstart FROM project_task "
+                          "    WHERE worker_user_id IS NOT NULL AND state='open' ) t "
+                          "    ON t.worker_user_id = u.id "
+                          "ORDER BY t.wstart ASC");
+        // iteration through the resultset:
+        ui->table_techs->clearContents();
+        ui->table_techs->setRowCount(0);
+        int row_id=0;
+        for (rowset<row>::const_iterator it = rs.begin(); it != rs.end(); ++it)
+        {
+            row const& row = *it;
+            string tech, description;
+            std::tm worker_start;
+
+            // dynamic data extraction from each row:
+            time_t default_time_t = 0;
+            std::tm* default_tm = localtime( &default_time_t );
+
+            tech = row.get<string>(0);
+            description = row.get<string>(1,"");
+            worker_start = row.get<std::tm>(2, *default_tm );
+
+            qint64 mins = QDateTimeFromTM( worker_start ).msecsTo( QDateTime::currentDateTime() ) / 1000 / 60;
+            qint64 hours = mins / 60;
+            qint64 minutes = mins % 60;
+            QString duration;
+            if ( !description.empty() ) {
+                duration = (hours > 0)
+                                ? tr("%0:%1").arg(hours).arg(minutes)
+                                : tr("%0 minute(s)").arg(mins);
+            }
+            ui->table_techs->insertRow(row_id);
+            ui->table_techs->setItem(row_id, 0, new QTableWidgetItem( QString(tech.c_str())));
+            ui->table_techs->setItem(row_id, 2, new QTableWidgetItem( QString(description.c_str())));
+            ui->table_techs->setItem(row_id, 1, new QTableWidgetItem( duration ) );
+            row_id++;
+        }
+        ui->lbl_techs_error->hide();
+        ui->table_techs->show();
+        m_techs_timer.setInterval( TECH_REFRESH_INTERVAL );
+    }
+    catch ( soci::soci_error& error) {
+        ui->table_techs->hide();
+        ui->lbl_techs_error->setText( tr( "An error occured while fetching tech information. Retrying in %0 seconds. Error information:<hr><div style=\"font-weight: bold; margin-left: 16px;\">%1</div>" ).arg(ERROR_REFRESH_INTERVAL / 1000).arg( error.what() ) );
+        ui->lbl_techs_error->show();
+        m_techs_timer.setInterval( ERROR_REFRESH_INTERVAL );
+    }
+    catch ( QString& error ) {
+        ui->table_techs->hide();
+        ui->lbl_techs_error->setText( tr( "An error occured while fetching tech information. Retrying in %0 seconds. Error information:<hr><div style=\"font-weight: bold; margin-left: 16px;\">%1</div>" ).arg(ERROR_REFRESH_INTERVAL / 1000).arg( error ) );
+        ui->lbl_techs_error->show();
+        m_techs_timer.setInterval( ERROR_REFRESH_INTERVAL );
     }
 }
 
@@ -474,6 +557,14 @@ void MainWindow::TrayClicked(QSystemTrayIcon::ActivationReason reason) {
     if ( reason == QSystemTrayIcon::DoubleClick ) {
         showNormal();
     }
+}
+
+void MainWindow::NetworkVisibilityChanged(bool visible) {
+    ui->actionNetwork_Browser->setChecked(visible);
+}
+
+void MainWindow::TechVisibilityChanged(bool visible) {
+    ui->actionTechs->setChecked(visible);
 }
 
 void MainWindow::showNormal() {

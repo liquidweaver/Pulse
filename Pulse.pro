@@ -46,4 +46,6 @@ unix {
 OTHER_FILES += \
     pulse.rc \
     pulse.ico \
+    .gitignore \
+    PNG/64/Gnome-Preferences-Desktop-Remote-Desktop-64.png \
     .gitignore

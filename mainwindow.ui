@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>967</width>
-    <height>518</height>
+    <width>1044</width>
+    <height>602</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,19 +26,174 @@ qradialgradient(spread:repeat, cx:0.5, cy:0.5, radius:0.077, fx:0.5, fy:0.5, sto
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QSplitter" name="splitter">
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
       </property>
+      <property name="title">
+       <string>Hot Tickets</string>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QTableWidget" name="table_tickets">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QTableWidget {background-image: url(:/ico/PNG/64/Gnome-Emblem-Documents-64.png);
+background-repeat:no-repeat;
+background-attachment:fixed;
+background-position:bottom right; 
+text-align:left;}</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="lineWidth">
+          <number>0</number>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="showGrid">
+          <bool>false</bool>
+         </property>
+         <property name="cornerButtonEnabled">
+          <bool>false</bool>
+         </property>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Priority</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Ticket</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Owned By</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Working</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Worked Time</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Customer</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Ticket Description</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lbl_tickets_error">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Loading...</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1044</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>System</string>
+    </property>
+    <addaction name="actionSettings"/>
+    <addaction name="action_Quit"/>
+    <addaction name="separator"/>
+    <addaction name="actionReload_Network"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuWindows">
+    <property name="title">
+     <string>Windows</string>
+    </property>
+    <addaction name="actionNetwork_Browser"/>
+    <addaction name="actionTechs"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuWindows"/>
+  </widget>
+  <widget class="QDockWidget" name="dock_network_browser">
+   <property name="features">
+    <set>QDockWidget::DockWidgetFeatureMask</set>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <item>
       <widget class="QGroupBox" name="groupBox">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="title">
         <string>Network</string>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
@@ -81,25 +236,45 @@ qradialgradient(spread:repeat, cx:0.5, cy:0.5, radius:0.077, fx:0.5, fy:0.5, sto
         </item>
        </layout>
       </widget>
-      <widget class="QGroupBox" name="groupBox_2">
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dock_techs">
+   <property name="minimumSize">
+    <size>
+     <width>400</width>
+     <height>163</height>
+    </size>
+   </property>
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QVBoxLayout" name="verticalLayout_5">
+     <item>
+      <widget class="QGroupBox" name="groupBox_3">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="title">
-        <string>Hot Tickets</string>
+        <string>Who's Working What</string>
        </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
-         <widget class="QTableWidget" name="tableWidget">
+         <widget class="QTableWidget" name="table_techs">
           <property name="styleSheet">
-           <string notr="true">background-image: url(:/ico/PNG/64/Gnome-Emblem-Documents-64.png);
+           <string notr="true">QTableWidget {background-image: url(:/ico/PNG/64/Gnome-System-Users-64.png);
 background-repeat:no-repeat;
 background-attachment:fixed;
 background-position:bottom right; 
-text-align:left;</string>
+text-align:left;}</string>
           </property>
           <property name="frameShape">
            <enum>QFrame::Box</enum>
@@ -107,14 +282,11 @@ text-align:left;</string>
           <property name="lineWidth">
            <number>0</number>
           </property>
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
           <property name="showGrid">
            <bool>false</bool>
           </property>
-          <property name="cornerButtonEnabled">
-           <bool>false</bool>
+          <property name="sortingEnabled">
+           <bool>true</bool>
           </property>
           <attribute name="horizontalHeaderStretchLastSection">
            <bool>true</bool>
@@ -124,96 +296,57 @@ text-align:left;</string>
           </attribute>
           <column>
            <property name="text">
-            <string>Priority</string>
+            <string>Tech</string>
            </property>
           </column>
           <column>
            <property name="text">
-            <string>Ticket</string>
+            <string>Time Worked</string>
            </property>
           </column>
           <column>
            <property name="text">
-            <string>Owned By</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Working</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Worked Time</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Customer</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Ticket Description</string>
+            <string>Ticket Working</string>
            </property>
           </column>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="lbl_tickets_error">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
+         <widget class="QLabel" name="lbl_techs_error">
           <property name="text">
            <string>Loading...</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
           </property>
          </widget>
         </item>
        </layout>
       </widget>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>967</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>System</string>
-    </property>
-    <addaction name="actionSettings"/>
-    <addaction name="action_Quit"/>
-    <addaction name="separator"/>
-    <addaction name="actionReload_Network"/>
-    <addaction name="actionAbout"/>
+     </item>
+    </layout>
    </widget>
-   <addaction name="menuFile"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionSettings">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/ico/PNG/48/Gnome-Preferences-System-48.png</normaloff>:/ico/PNG/48/Gnome-Preferences-System-48.png</iconset>
+   </property>
    <property name="text">
     <string>Settings...</string>
    </property>
   </action>
   <action name="action_Quit">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/ico/PNG/32/Gnome-System-Shutdown-32.png</normaloff>:/ico/PNG/32/Gnome-System-Shutdown-32.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Quit</string>
    </property>
   </action>
   <action name="actionReload_Network">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/ico/PNG/64/Gnome-Preferences-Desktop-Remote-Desktop-64.png</normaloff>:/ico/PNG/64/Gnome-Preferences-Desktop-Remote-Desktop-64.png</iconset>
+   </property>
    <property name="text">
     <string>Reload Network</string>
    </property>
@@ -224,8 +357,42 @@ text-align:left;</string>
    </property>
   </action>
   <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/ico/PNG/pulse.png</normaloff>:/ico/PNG/pulse.png</iconset>
+   </property>
    <property name="text">
     <string>About...</string>
+   </property>
+  </action>
+  <action name="actionNetwork_Browser">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/ico/PNG/64/Gnome-Preferences-Desktop-Remote-Desktop-64.png</normaloff>:/ico/PNG/64/Gnome-Preferences-Desktop-Remote-Desktop-64.png</iconset>
+   </property>
+   <property name="text">
+    <string>Network</string>
+   </property>
+  </action>
+  <action name="actionTechs">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/ico/PNG/64/Gnome-System-Users-64.png</normaloff>:/ico/PNG/64/Gnome-System-Users-64.png</iconset>
+   </property>
+   <property name="text">
+    <string>Who's Working What</string>
    </property>
   </action>
  </widget>
@@ -298,6 +465,54 @@ text-align:left;</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>dock_network_browser</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>NetworkVisibilityChanged(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>9</x>
+     <y>369</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>964</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNetwork_Browser</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dock_network_browser</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>483</x>
+     <y>437</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionTechs</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dock_techs</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>766</x>
+     <y>437</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>LoadTickets()</slot>
@@ -305,5 +520,6 @@ text-align:left;</string>
   <slot>LoadZone()</slot>
   <slot>Quit()</slot>
   <slot>ShowAbout()</slot>
+  <slot>NetworkVisibilityChanged(bool)</slot>
  </slots>
 </ui>

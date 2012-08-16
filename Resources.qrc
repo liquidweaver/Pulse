@@ -4,5 +4,8 @@
         <file>PNG/64/Gnome-Preferences-Desktop-Remote-Desktop-64.png</file>
         <file>PNG/64/Gnome-Emblem-Documents-64.png</file>
         <file>PNG/64/Gnome-Document-Properties-64.png</file>
+        <file>PNG/32/Gnome-System-Shutdown-32.png</file>
+        <file>PNG/48/Gnome-Preferences-System-48.png</file>
+        <file>PNG/64/Gnome-System-Users-64.png</file>
     </qresource>
 </RCC>

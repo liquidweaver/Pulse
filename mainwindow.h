@@ -38,13 +38,14 @@ private:
     QSystemTrayIcon* m_tray_icon;
     void SaveServices( const QMap<QString,Service>& service_map );
     QMap<QString, Service> LoadServices();
-    QTimer m_ticket_timer, m_zone_timer;
+    QTimer m_ticket_timer, m_zone_timer, m_techs_timer;
     bool m_show_close_warning;
     QDateTime QDateTimeFromTM(std::tm& t );
     void LoadDefaultSettings();
 
 public slots:
     void LoadTickets();
+    void LoadTechs();
     void LoadZone();
     void ShowAbout();
     void service_link_handler( const QString& link );
@@ -54,6 +55,8 @@ public slots:
     void closeEvent(QCloseEvent *event);
     void showNormal();
     void TrayClicked(QSystemTrayIcon::ActivationReason);
+    void NetworkVisibilityChanged(bool);
+    void TechVisibilityChanged(bool);
 };
 
 #endif // MAINWINDOW_H

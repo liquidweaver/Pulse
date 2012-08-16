@@ -2,7 +2,7 @@
 #define GLOBAL_DEFINES_H
 
 //Pulse version
-#define PULSE_VERSION ".08A"
+#define PULSE_VERSION ".10A"
 //Compatible settings?
 #define PULSE_SETTINGS_SERIAL 1
 
@@ -17,6 +17,9 @@
 
 //Period length for ticket refresh
 #define TICKET_REFRESH_INTERVAL 3*60*1000
+
+//Period length for whos working refresh
+#define TECH_REFRESH_INTERVAL 1*60*1000
 
 #define SETTING_SERIAL "main/pulse_settings_serial"
 #define SETTING_ZONE "network/zone"
