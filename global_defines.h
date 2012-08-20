@@ -32,5 +32,11 @@
 {   "ping", "#", "C:/Windows/System32/PING.EXE", \
     "rdp", "/v #", "C:/Windows/System32/mstsc.exe", \
     "smb", "\\#", "C:/Windows/System32/explorer.exe", NULL }
+#define DEFAULT_SERVICES_LINUX \
+{   "ping", "-x /bin/ping -c5 #", "/usr/bin/gnome-terminal", \
+    "rdp", "#", "/usr/bin/rdesktop", \
+    "smb", "smb://#", "/usr/bin/nautilus", \
+    "vnc", "#", "/usr/bin/vncviewer", \
+    "ssh", "-x /usr/bin/ssh -l administrator #", "/usr/bin/gnome-terminal", NULL }
 
 #endif // GLOBAL_DEFINES_H

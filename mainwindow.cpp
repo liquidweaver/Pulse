@@ -38,9 +38,9 @@ MainWindow::MainWindow(QWidget *parent) :
     int settings_version = LoadSetting("main/pulse_settings_serial").toInt();
     if ( PULSE_SETTINGS_SERIAL != settings_version ) {
         int ret = QMessageBox::warning(this, "Incompatible settings detected",
-                                          tr("Your settings are no longer compatible with "
-                                             "this version of Pulse. OK to load defaults?"),
-                                          QMessageBox::Abort | QMessageBox::Ok, QMessageBox::Abort );
+                                       tr("Your settings are no longer compatible with "
+                                          "this version of Pulse. OK to load defaults?"),
+                                       QMessageBox::Abort | QMessageBox::Ok, QMessageBox::Abort );
         if ( ret != QMessageBox::Ok ) {
             throw std::runtime_error( "Incompatible settings" );
         }
@@ -136,10 +136,10 @@ void MainWindow::ZoneTransfer( const QString& zone_name, QList<NameRecord>& reco
     QString axfr_result = RunExternal( tr("nslookup"), tr("server %0\nls -d %1\nquit\n").arg(SOA).arg(zone_name));
     QRegExp rr_rx("([\\._a-zA-Z\\d-]{1,63})\\s+((TXT)|(A))\\s+\"?([\\._a-zA-Z\\d -]{1,63})\"?");
 #else
-	QProcess process;
-	QStringList args;
-	args << "axfr" << zone_name << tr("@%0").arg(SOA);
-	process.start( tr("dig"), args );
+    QProcess process;
+    QStringList args;
+    args << "axfr" << zone_name << tr("@%0").arg(SOA);
+    process.start( tr("dig"), args );
     if(!process.waitForFinished())
         throw std::runtime_error( "GrabZoneSOA :dig never finished" );
 
@@ -232,13 +232,13 @@ void MainWindow::LoadZone() {
                 }
                 const QStandardItem * this_cell = results[0];
                 QStandardItem* cell = this_cell->parent()->child( this_cell->index().row(),
-                                                                       this_cell->index().column() + 1 );
+                                                                  this_cell->index().column() + 1 );
                 QModelIndex over_one = cell->index();
                 link_container->setLayout(layout);
                 //setLayout(layout);
 
                 ui->treeView->setIndexWidget( over_one, link_container );
-           }
+            }
         }
         ui->treeView->expandToDepth(0);
         ui->treeView->header()->moveSection(1, 0);
@@ -275,13 +275,13 @@ void MainWindow::LoadTickets() {
         }
         session sql( tr("postgresql://dbname=%0 host=%1 user=%2 password=%3").arg(db_name).arg(merp_host).arg(db_user).arg(db_pass).toStdString() );
         rowset<row> rs = (sql.prepare << "SELECT project_task.weight,crm_metro_helpdesk.ticket_no, project_task.name, res_users.name, res_partner.name, ru.name, project_task.worker_start_date "
-                                          "FROM crm_metro_helpdesk INNER JOIN project_task ON project_task.helpdesk_id = crm_metro_helpdesk.id "
-                                          "INNER JOIN res_users ON res_users.id = project_task.user_id INNER JOIN res_partner ON res_partner.id = project_task.partner_id "
-                                          "LEFT JOIN res_users as ru ON ru.id = project_task.worker_user_id "
-                                          "WHERE project_task.state = 'open' AND "
-                                          "project_task.weight > "
-                                          "    (SELECT value_integer FROM ir_property WHERE name = 'property_helpdesk_weight_hot_threshold') "
-                                          "ORDER BY project_task.weight DESC;");
+                          "FROM crm_metro_helpdesk INNER JOIN project_task ON project_task.helpdesk_id = crm_metro_helpdesk.id "
+                          "INNER JOIN res_users ON res_users.id = project_task.user_id INNER JOIN res_partner ON res_partner.id = project_task.partner_id "
+                          "LEFT JOIN res_users as ru ON ru.id = project_task.worker_user_id "
+                          "WHERE project_task.state = 'open' AND "
+                          "project_task.weight > "
+                          "    (SELECT value_integer FROM ir_property WHERE name = 'property_helpdesk_weight_hot_threshold') "
+                          "ORDER BY project_task.weight DESC;");
         // iteration through the resultset:
         ui->table_tickets->clearContents();
         ui->table_tickets->setRowCount(0);
@@ -309,8 +309,8 @@ void MainWindow::LoadTickets() {
             QString duration;
             if ( !worker_name.empty() ){
                 duration = (hours > 0)
-                                ? tr("%0:%1").arg(hours).arg(minutes)
-                                : tr("%0 minute(s)").arg(mins);
+                        ? tr("%0:%1").arg(hours).arg(minutes)
+                        : tr("%0 minute(s)").arg(mins);
             }
             ui->table_tickets->insertRow(row_id);
             ui->table_tickets->setItem(row_id, 0, new QTableWidgetItem( QString("%0").arg(priority) ) );
@@ -399,8 +399,8 @@ void MainWindow::LoadTechs() {
             qint64 minutes = mins % 60;
             QString duration;
             duration = (hours > 0)
-                            ? tr("%0:%1").arg(hours).arg(minutes)
-                            : tr("%0 minute(s)").arg(mins);
+                    ? tr("%0:%1").arg(hours).arg(minutes)
+                    : tr("%0 minute(s)").arg(mins);
 
             ui->table_techs->insertRow(row_id);
             ui->table_techs->setItem(row_id, 0, new QTableWidgetItem( QString(tech.c_str())));
@@ -431,7 +431,11 @@ void MainWindow::LoadTechs() {
 void MainWindow::SetServiceLocation( const QString& service_name ) {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Where is the program to handle the %0 protocol?").arg(service_name),
                                                     QDesktopServices::storageLocation( QDesktopServices::ApplicationsLocation ),
-                                                    tr("Program (*.exe)"));
+                                                #ifdef Q_OS_WIN32
+                                                    tr("Programs (*.exe)"));
+#else
+                                                    tr("Programs (*)"));
+#endif
     //TODO: Open dialog?
     if (!fileName.isNull() ) {
         QMap<QString, Service> services = LoadServices();
@@ -452,15 +456,13 @@ void MainWindow::service_url_handler( const QUrl& url ) {
     try {
         if ( it_svc != services.end() ) {
             const Service& svc = it_svc.value();
-            QStringList arguments;
-            if ( svc.argument_string.contains('#') ) {
-                QString argstring = svc.argument_string;
-                arguments << argstring.replace( "#", url.host() ).split(' ');
-            }
+            QString arguments( svc.argument_string );
+            if ( arguments.contains('#') )
+                arguments = arguments.replace( '#', url.host() );
             else
-                arguments << url.host();
+                arguments = url.host();
 
-            bool started = QProcess::startDetached( svc.program_path, arguments );
+            bool started = QProcess::startDetached( QString( "%0 %1" ).arg( svc.program_path ).arg( arguments ) );
             if (!started)
                 throw QString("Could not start %0.").arg(QDir::toNativeSeparators( svc.program_path ) );
         }
@@ -469,8 +471,8 @@ void MainWindow::service_url_handler( const QUrl& url ) {
     }
     catch ( QString error ) {
         if ( QMessageBox::Yes == QMessageBox::critical( this, tr("Problem" ),
-                                    tr("%0 Would you like to show me where to find the right program?" ).arg(error),
-                                    QMessageBox::Yes | QMessageBox::No  ) ) {
+                                                        tr("%0 Would you like to show me where to find the right program?" ).arg(error),
+                                                        QMessageBox::Yes | QMessageBox::No  ) ) {
             SetServiceLocation( url.scheme() );
         }
     }
@@ -496,19 +498,19 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::SaveSetting(const QString &path, const QVariant &value) {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope,
-                            "metropark", "pulse");
+                       "metropark", "pulse");
     settings.setValue( path, value );
 }
 
 QVariant MainWindow::LoadSetting(const QString &path) {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope,
-                            "metropark", "pulse");
+                       "metropark", "pulse");
     return settings.value( path );
 }
 
 void MainWindow::SaveServices( const QMap<QString, Service>& service_map ) {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope,
-                            "metropark", "pulse");
+                       "metropark", "pulse");
     settings.beginWriteArray("services");
     int i = 0;
     for ( QMap<QString, Service>::const_iterator svc_it = service_map.begin();
@@ -524,9 +526,9 @@ void MainWindow::SaveServices( const QMap<QString, Service>& service_map ) {
     settings.endArray();
 }
 
-  QMap<QString, Service> MainWindow::LoadServices() {
+QMap<QString, Service> MainWindow::LoadServices() {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope,
-                            "metropark", "pulse");
+                       "metropark", "pulse");
     QMap<QString, Service> services;
     int size = settings.beginReadArray( "services" );
     for (int i=0; i < size; i++ ) {
@@ -588,7 +590,7 @@ QDateTime MainWindow::QDateTimeFromTM(std::tm& t ) {
 
 void MainWindow::LoadDefaultSettings() {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope,
-                            "metropark", "pulse");
+                       "metropark", "pulse");
     settings.clear();
     settings.setValue( SETTING_SERIAL, PULSE_SETTINGS_SERIAL );
     settings.setValue( SETTING_ZONE, "customer.mp" );
@@ -607,6 +609,16 @@ void MainWindow::LoadDefaultSettings() {
         }
         settings.endArray();
     }
-
+#else
+    { const char* default_services[] = DEFAULT_SERVICES_LINUX;
+        settings.beginWriteArray("services");
+        for( int i=0, j=0; default_services[i] != NULL; i+=3, j++ ) {
+            settings.setArrayIndex(j);
+            settings.setValue( "name", default_services[i]);
+            settings.setValue( "argument_string", default_services[i+1]);
+            settings.setValue( "program_path", default_services[i+2]);
+        }
+        settings.endArray();
+    }
 #endif
 }
