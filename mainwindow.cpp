@@ -461,11 +461,14 @@ void MainWindow::service_url_handler( const QUrl& url ) {
                 arguments = arguments.replace( '#', url.host() );
             else
                 arguments = url.host();
-
+#ifdef Q_OS_WIN
             QStringList arglist;
-            arglist << arguments;
+            arglist << arguments.split(' ');
 
             bool started = QProcess::startDetached( svc.program_path, arglist );
+#else
+            bool started = QProcess::startDetached( QString( "%0 %1").arg( svc.program_path ).arg( arguments ) );
+#endif
             if (!started)
                 throw QString("Could not start %0.").arg(QDir::toNativeSeparators( svc.program_path ) );
         }
