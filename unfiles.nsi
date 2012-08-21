@@ -1,5 +1,6 @@
 Delete "$INSTDIR\libgcc_s_dw2-1.dll"
 Delete "$INSTDIR\libgcc_s_sjlj-1.dll"
+Delete "$INSTDIR\libstdc++-6.dll"
 Delete "$INSTDIR\libpq.dll"
 Delete "$INSTDIR\libsoci_core_3_1.dll"
 Delete "$INSTDIR\libsoci_postgresql_3_1.dll"
