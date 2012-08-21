@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Tue Aug 21 15:39:16 2012
+** Created: Tue Aug 21 17:11:19 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -38,6 +38,7 @@ public:
     QAction *actionAbout;
     QAction *actionNetwork_Browser;
     QAction *actionTechs;
+    QAction *actionTheatre_View;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QGroupBox *groupBox_2;
@@ -66,7 +67,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1044, 602);
+        MainWindow->resize(1050, 602);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/ico/PNG/pulse.png"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
@@ -106,6 +107,9 @@ public:
         QIcon icon4;
         icon4.addFile(QString::fromUtf8(":/ico/PNG/64/Gnome-System-Users-64.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionTechs->setIcon(icon4);
+        actionTheatre_View = new QAction(MainWindow);
+        actionTheatre_View->setObjectName(QString::fromUtf8("actionTheatre_View"));
+        actionTheatre_View->setCheckable(true);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
@@ -145,7 +149,19 @@ public:
 "background-repeat:no-repeat;\n"
 "background-attachment:fixed;\n"
 "background-position:bottom right; \n"
-"text-align:left;}"));
+"text-align:left;\n"
+"}\n"
+"QHeaderView::section\n"
+"{\n"
+"     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,\n"
+"                                       stop:0 #A60000, stop: 0.5 #BF3030,\n"
+"                                       stop: 0.6 #BF3030, stop:1 #A60000);\n"
+"     color: white;\n"
+"     border: 1px solid #6c6c6c;\n"
+"	 padding: 3px;\n"
+"	font-weight: bold;\n"
+"}\n"
+""));
         table_tickets->setFrameShape(QFrame::Box);
         table_tickets->setLineWidth(0);
         table_tickets->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -172,7 +188,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1044, 21));
+        menuBar->setGeometry(QRect(0, 0, 1050, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuWindows = new QMenu(menuBar);
@@ -231,6 +247,17 @@ public:
         groupBox_3 = new QGroupBox(dockWidgetContents_2);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
         groupBox_3->setFont(font);
+        groupBox_3->setStyleSheet(QString::fromUtf8("\n"
+"QHeaderView::section\n"
+"{\n"
+"     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,\n"
+"                                       stop:0 #619161, stop: 0.5 #508050,\n"
+"                                       stop: 0.6 #437343, stop:1 #659565);\n"
+"     color: white;\n"
+"     border: 1px solid #6c6c6c;\n"
+"    padding: 3px;\n"
+"	font-weight: bold;\n"
+"}"));
         verticalLayout_6 = new QVBoxLayout(groupBox_3);
         verticalLayout_6->setSpacing(6);
         verticalLayout_6->setContentsMargins(11, 11, 11, 11);
@@ -253,7 +280,8 @@ public:
 "background-repeat:no-repeat;\n"
 "background-attachment:fixed;\n"
 "background-position:bottom right; \n"
-"text-align:left;}"));
+"text-align:left;}\n"
+""));
         table_techs->setFrameShape(QFrame::Box);
         table_techs->setLineWidth(0);
         table_techs->setShowGrid(false);
@@ -283,6 +311,8 @@ public:
         menuFile->addAction(actionAbout);
         menuWindows->addAction(actionNetwork_Browser);
         menuWindows->addAction(actionTechs);
+        menuWindows->addSeparator();
+        menuWindows->addAction(actionTheatre_View);
 
         retranslateUi(MainWindow);
         QObject::connect(actionSettings, SIGNAL(triggered()), MainWindow, SLOT(ShowSettings()));
@@ -291,6 +321,7 @@ public:
         QObject::connect(actionAbout, SIGNAL(triggered()), MainWindow, SLOT(ShowAbout()));
         QObject::connect(actionNetwork_Browser, SIGNAL(toggled(bool)), dock_network_browser, SLOT(setVisible(bool)));
         QObject::connect(actionTechs, SIGNAL(toggled(bool)), dock_techs, SLOT(setVisible(bool)));
+        QObject::connect(actionTheatre_View, SIGNAL(triggered(bool)), MainWindow, SLOT(ShowTheatre(bool)));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -305,6 +336,7 @@ public:
         actionAbout->setText(QApplication::translate("MainWindow", "About...", 0, QApplication::UnicodeUTF8));
         actionNetwork_Browser->setText(QApplication::translate("MainWindow", "Network", 0, QApplication::UnicodeUTF8));
         actionTechs->setText(QApplication::translate("MainWindow", "Who's Working What", 0, QApplication::UnicodeUTF8));
+        actionTheatre_View->setText(QApplication::translate("MainWindow", "Theatre View", 0, QApplication::UnicodeUTF8));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Hot Tickets", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem = table_tickets->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "Priority", 0, QApplication::UnicodeUTF8));

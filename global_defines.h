@@ -2,7 +2,7 @@
 #define GLOBAL_DEFINES_H
 
 //Pulse version
-#define PULSE_VERSION ".12A"
+#define PULSE_VERSION ".13A"
 //Compatible settings?
 #define PULSE_SETTINGS_SERIAL 1
 

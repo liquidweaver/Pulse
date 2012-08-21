@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'settings.ui'
 **
-** Created: Tue Aug 21 14:08:18 2012
+** Created: Tue Aug 21 15:57:18 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -211,7 +211,7 @@ public:
 
     void retranslateUi(QDialog *Settings)
     {
-        Settings->setWindowTitle(QApplication::translate("Settings", "Dialog", 0, QApplication::UnicodeUTF8));
+        Settings->setWindowTitle(QApplication::translate("Settings", "Settings", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QApplication::translate("Settings", "Network Discovery", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("Settings", "DNS Zone", 0, QApplication::UnicodeUTF8));
         groupBox_2->setTitle(QApplication::translate("Settings", "Hot Tickets", 0, QApplication::UnicodeUTF8));

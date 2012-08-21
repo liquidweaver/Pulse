@@ -406,7 +406,7 @@ void MainWindow::LoadTechs() {
             ui->table_techs->setItem(row_id, 0, new QTableWidgetItem( QString(tech.c_str())));
             ui->table_techs->setItem(row_id, 1, new QTableWidgetItem( QString("%0").arg(priority) ) );
             ui->table_techs->setItem(row_id, 2, new QTableWidgetItem( duration ) );
-            ui->table_techs->setItem(row_id, 5, new QTableWidgetItem( QString(customer_name.c_str())));
+            ui->table_techs->setItem(row_id, 3, new QTableWidgetItem( QString(customer_name.c_str())));
             ui->table_techs->setItem(row_id, 4, new QTableWidgetItem( QString(description.c_str())));
             row_id++;
         }
@@ -564,6 +564,20 @@ void MainWindow::ShowSettings() {
 
 void MainWindow::ShowAbout() {
     QMessageBox::about( this, "About Pulse", "Metropark Pulse\nVersion " PULSE_VERSION );
+}
+
+void MainWindow::ShowTheatre(bool show ) {
+    if ( show ) {
+        ui->dock_network_browser->hide();
+        this->showFullScreen();
+        this->setStyleSheet( "font-size:16pt;");
+    }
+    else {
+        ui->dock_network_browser->show();
+        this->showNormal();
+        this->setStyleSheet( "" );
+    }
+
 }
 
 void MainWindow::TrayClicked(QSystemTrayIcon::ActivationReason reason) {

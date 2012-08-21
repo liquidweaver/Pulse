@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1044</width>
+    <width>1050</width>
     <height>602</height>
    </rect>
   </property>
@@ -47,7 +47,19 @@ qradialgradient(spread:repeat, cx:0.5, cy:0.5, radius:0.077, fx:0.5, fy:0.5, sto
 background-repeat:no-repeat;
 background-attachment:fixed;
 background-position:bottom right; 
-text-align:left;}</string>
+text-align:left;
+}
+QHeaderView::section
+{
+     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 #A60000, stop: 0.5 #BF3030,
+                                       stop: 0.6 #BF3030, stop:1 #A60000);
+     color: white;
+     border: 1px solid #6c6c6c;
+	 padding: 3px;
+	font-weight: bold;
+}
+</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::Box</enum>
@@ -133,7 +145,7 @@ text-align:left;}</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1044</width>
+     <width>1050</width>
      <height>21</height>
     </rect>
    </property>
@@ -153,6 +165,8 @@ text-align:left;}</string>
     </property>
     <addaction name="actionNetwork_Browser"/>
     <addaction name="actionTechs"/>
+    <addaction name="separator"/>
+    <addaction name="actionTheatre_View"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuWindows"/>
@@ -245,6 +259,19 @@ text-align:left;}</string>
          <bold>true</bold>
         </font>
        </property>
+       <property name="styleSheet">
+        <string notr="true">
+QHeaderView::section
+{
+     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 #619161, stop: 0.5 #508050,
+                                       stop: 0.6 #437343, stop:1 #659565);
+     color: white;
+     border: 1px solid #6c6c6c;
+    padding: 3px;
+	font-weight: bold;
+}</string>
+       </property>
        <property name="title">
         <string>Who's Working What</string>
        </property>
@@ -256,7 +283,8 @@ text-align:left;}</string>
 background-repeat:no-repeat;
 background-attachment:fixed;
 background-position:bottom right; 
-text-align:left;}</string>
+text-align:left;}
+</string>
           </property>
           <property name="frameShape">
            <enum>QFrame::Box</enum>
@@ -387,6 +415,14 @@ text-align:left;}</string>
     <string>Who's Working What</string>
    </property>
   </action>
+  <action name="actionTheatre_View">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Theatre View</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -489,6 +525,22 @@ text-align:left;}</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionTheatre_View</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>ShowTheatre(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>LoadTickets()</slot>
@@ -497,5 +549,6 @@ text-align:left;}</string>
   <slot>Quit()</slot>
   <slot>ShowAbout()</slot>
   <slot>NetworkVisibilityChanged(bool)</slot>
+  <slot>ShowTheatre(bool)</slot>
  </slots>
 </ui>

@@ -48,6 +48,7 @@ public slots:
     void LoadTechs();
     void LoadZone();
     void ShowAbout();
+    void ShowTheatre( bool );
     void service_link_handler( const QString& link );
     void service_url_handler( const QUrl& url );
     void ShowSettings();
