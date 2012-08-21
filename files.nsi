@@ -1,0 +1,7 @@
+File /a  "${srcdir}\libgcc_s_dw2-1.dll"
+File /a  "${srcdir}\libpq.dll"
+File /a  "${srcdir}\libsoci_core_3_1.dll"
+File /a  "${srcdir}\libsoci_postgresql_3_1.dll"
+File /a  "${srcdir}\mingwm10.dll"
+File /a  "${srcdir}\QtCore4.dll"
+File /a  "${srcdir}\QtGui4.dll"

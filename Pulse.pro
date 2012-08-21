@@ -48,4 +48,8 @@ OTHER_FILES += \
     pulse.ico \
     .gitignore \
     PNG/64/Gnome-Preferences-Desktop-Remote-Desktop-64.png \
-    .gitignore
+    .gitignore \
+    unfiles.nsi \
+    README.txt \
+    pulse_install.nsi \
+    files.nsi

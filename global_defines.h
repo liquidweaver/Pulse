@@ -27,7 +27,6 @@
 #define SETTING_DB_NAME "tickets/db_name"
 #define SETTING_DB_USER "tickets/db_user"
 #define SETTING_DB_PASS "tickets/db_pass"
-
 #define DEFAULT_SERVICES_WINDOWS \
 {   "ping", "#", "C:/Windows/System32/PING.EXE", \
     "rdp", "/v #", "C:/Windows/System32/mstsc.exe", \

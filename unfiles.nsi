@@ -1,0 +1,7 @@
+Delete "$INSTDIR\libgcc_s_dw2-1.dll"
+Delete "$INSTDIR\libpq.dll"
+Delete "$INSTDIR\libsoci_core_3_1.dll"
+Delete "$INSTDIR\libsoci_postgresql_3_1.dll"
+Delete "$INSTDIR\mingwm10.dll"
+Delete "$INSTDIR\QtCore4.dll"
+Delete "$INSTDIR\QtGui4.dll"
