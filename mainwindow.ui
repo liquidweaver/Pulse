@@ -458,22 +458,6 @@ text-align:left;}</string>
    </hints>
   </connection>
   <connection>
-   <sender>dock_network_browser</sender>
-   <signal>visibilityChanged(bool)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>NetworkVisibilityChanged(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>9</x>
-     <y>369</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>964</x>
-     <y>338</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>actionNetwork_Browser</sender>
    <signal>toggled(bool)</signal>
    <receiver>dock_network_browser</receiver>
@@ -484,8 +468,8 @@ text-align:left;}</string>
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>483</x>
-     <y>437</y>
+     <x>1043</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>

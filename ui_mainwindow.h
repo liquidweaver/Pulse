@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Tue Aug 21 14:08:18 2012
+** Created: Tue Aug 21 15:39:16 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -289,7 +289,6 @@ public:
         QObject::connect(action_Quit, SIGNAL(triggered()), MainWindow, SLOT(Quit()));
         QObject::connect(actionReload_Network, SIGNAL(triggered()), MainWindow, SLOT(LoadZone()));
         QObject::connect(actionAbout, SIGNAL(triggered()), MainWindow, SLOT(ShowAbout()));
-        QObject::connect(dock_network_browser, SIGNAL(visibilityChanged(bool)), MainWindow, SLOT(NetworkVisibilityChanged(bool)));
         QObject::connect(actionNetwork_Browser, SIGNAL(toggled(bool)), dock_network_browser, SLOT(setVisible(bool)));
         QObject::connect(actionTechs, SIGNAL(toggled(bool)), dock_techs, SLOT(setVisible(bool)));
 
