@@ -20,8 +20,10 @@ private:
     void LoadSettings();
     Ui::Settings *ui;
 public slots:
+    void AddZone();
+    void RemoveSelectedZone();
     void AddService();
-    void RemoveSelected();
+    void RemoveSelectedService();
 };
 
 #endif // SETTINGS_H

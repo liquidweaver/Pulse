@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Tue Aug 21 17:11:19 2012
+** Created: Fri Aug 24 14:14:30 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -16,11 +16,13 @@
 #include <QtGui/QButtonGroup>
 #include <QtGui/QDockWidget>
 #include <QtGui/QGroupBox>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
+#include <QtGui/QStatusBar>
 #include <QtGui/QTableWidget>
 #include <QtGui/QTreeView>
 #include <QtGui/QVBoxLayout>
@@ -40,11 +42,11 @@ public:
     QAction *actionTechs;
     QAction *actionTheatre_View;
     QWidget *centralWidget;
-    QVBoxLayout *verticalLayout;
+    QHBoxLayout *horizontalLayout;
     QGroupBox *groupBox_2;
     QVBoxLayout *verticalLayout_2;
-    QTableWidget *table_tickets;
     QLabel *lbl_tickets_error;
+    QTableWidget *table_tickets;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuWindows;
@@ -57,24 +59,21 @@ public:
     QLabel *lbl_zone_error;
     QDockWidget *dock_techs;
     QWidget *dockWidgetContents_2;
-    QVBoxLayout *verticalLayout_5;
+    QVBoxLayout *verticalLayout;
     QGroupBox *groupBox_3;
     QVBoxLayout *verticalLayout_6;
     QTableWidget *table_techs;
     QLabel *lbl_techs_error;
+    QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1050, 602);
+        MainWindow->resize(1294, 626);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/ico/PNG/pulse.png"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
-        MainWindow->setStyleSheet(QString::fromUtf8("QSplitter::handle {\n"
-"qradialgradient(spread:repeat, cx:0.5, cy:0.5, radius:0.077, fx:0.5, fy:0.5, stop:0 rgba(0, 169, 255, 147), stop:0.497326 rgba(0, 0, 0, 147), stop:1 rgba(0, 169, 255, 147))\n"
-"\n"
-"     }"));
         actionSettings = new QAction(MainWindow);
         actionSettings->setObjectName(QString::fromUtf8("actionSettings"));
         QIcon icon1;
@@ -112,21 +111,48 @@ public:
         actionTheatre_View->setCheckable(true);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-        verticalLayout = new QVBoxLayout(centralWidget);
-        verticalLayout->setSpacing(6);
-        verticalLayout->setContentsMargins(11, 11, 11, 11);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        horizontalLayout = new QHBoxLayout(centralWidget);
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         groupBox_2 = new QGroupBox(centralWidget);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         QFont font;
         font.setBold(true);
         font.setWeight(75);
         groupBox_2->setFont(font);
+        groupBox_2->setStyleSheet(QString::fromUtf8("QTableWidget {background-image: url(:/ico/PNG/64/Gnome-Emblem-Documents-64.png);\n"
+"background-repeat:no-repeat;\n"
+"background-attachment:fixed;\n"
+"background-position:bottom right; \n"
+"text-align:left;\n"
+"}\n"
+"\n"
+"QHeaderView::section\n"
+"{\n"
+"     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,\n"
+"                                       stop:0 #A60000, stop: 0.5 #BF3030,\n"
+"                                       stop: 0.6 #BF3030, stop:1 #A60000);\n"
+"     color: white;\n"
+"     border: 1px solid #6c6c6c;\n"
+"	 padding: 3px;\n"
+"	font-weight: bold;\n"
+"}"));
         groupBox_2->setCheckable(false);
         verticalLayout_2 = new QVBoxLayout(groupBox_2);
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        lbl_tickets_error = new QLabel(groupBox_2);
+        lbl_tickets_error->setObjectName(QString::fromUtf8("lbl_tickets_error"));
+        QFont font1;
+        font1.setBold(false);
+        font1.setWeight(50);
+        lbl_tickets_error->setFont(font1);
+        lbl_tickets_error->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
+
+        verticalLayout_2->addWidget(lbl_tickets_error);
+
         table_tickets = new QTableWidget(groupBox_2);
         if (table_tickets->columnCount() < 7)
             table_tickets->setColumnCount(7);
@@ -151,6 +177,7 @@ public:
 "background-position:bottom right; \n"
 "text-align:left;\n"
 "}\n"
+"\n"
 "QHeaderView::section\n"
 "{\n"
 "     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,\n"
@@ -160,8 +187,7 @@ public:
 "     border: 1px solid #6c6c6c;\n"
 "	 padding: 3px;\n"
 "	font-weight: bold;\n"
-"}\n"
-""));
+"}"));
         table_tickets->setFrameShape(QFrame::Box);
         table_tickets->setLineWidth(0);
         table_tickets->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -172,23 +198,13 @@ public:
 
         verticalLayout_2->addWidget(table_tickets);
 
-        lbl_tickets_error = new QLabel(groupBox_2);
-        lbl_tickets_error->setObjectName(QString::fromUtf8("lbl_tickets_error"));
-        QFont font1;
-        font1.setBold(false);
-        font1.setWeight(50);
-        lbl_tickets_error->setFont(font1);
-        lbl_tickets_error->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
 
-        verticalLayout_2->addWidget(lbl_tickets_error);
-
-
-        verticalLayout->addWidget(groupBox_2);
+        horizontalLayout->addWidget(groupBox_2);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1050, 21));
+        menuBar->setGeometry(QRect(0, 0, 1294, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuWindows = new QMenu(menuBar);
@@ -233,17 +249,22 @@ public:
         verticalLayout_4->addWidget(groupBox);
 
         dock_network_browser->setWidget(dockWidgetContents);
-        MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dock_network_browser);
+        MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dock_network_browser);
         dock_techs = new QDockWidget(MainWindow);
         dock_techs->setObjectName(QString::fromUtf8("dock_techs"));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(1);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(dock_techs->sizePolicy().hasHeightForWidth());
+        dock_techs->setSizePolicy(sizePolicy);
         dock_techs->setMinimumSize(QSize(400, 188));
         dock_techs->setFeatures(QDockWidget::AllDockWidgetFeatures);
         dockWidgetContents_2 = new QWidget();
         dockWidgetContents_2->setObjectName(QString::fromUtf8("dockWidgetContents_2"));
-        verticalLayout_5 = new QVBoxLayout(dockWidgetContents_2);
-        verticalLayout_5->setSpacing(6);
-        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
+        verticalLayout = new QVBoxLayout(dockWidgetContents_2);
+        verticalLayout->setSpacing(6);
+        verticalLayout->setContentsMargins(11, 11, 11, 11);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         groupBox_3 = new QGroupBox(dockWidgetContents_2);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
         groupBox_3->setFont(font);
@@ -297,10 +318,14 @@ public:
         verticalLayout_6->addWidget(lbl_techs_error);
 
 
-        verticalLayout_5->addWidget(groupBox_3);
+        verticalLayout->addWidget(groupBox_3);
 
         dock_techs->setWidget(dockWidgetContents_2);
         MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(8), dock_techs);
+        statusBar = new QStatusBar(MainWindow);
+        statusBar->setObjectName(QString::fromUtf8("statusBar"));
+        statusBar->setFont(font);
+        MainWindow->setStatusBar(statusBar);
 
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuWindows->menuAction());
@@ -338,6 +363,7 @@ public:
         actionTechs->setText(QApplication::translate("MainWindow", "Who's Working What", 0, QApplication::UnicodeUTF8));
         actionTheatre_View->setText(QApplication::translate("MainWindow", "Theatre View", 0, QApplication::UnicodeUTF8));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Hot Tickets", 0, QApplication::UnicodeUTF8));
+        lbl_tickets_error->setText(QApplication::translate("MainWindow", "Loading...", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem = table_tickets->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "Priority", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem1 = table_tickets->horizontalHeaderItem(1);
@@ -352,7 +378,6 @@ public:
         ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "Customer", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem6 = table_tickets->horizontalHeaderItem(6);
         ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "Ticket Description", 0, QApplication::UnicodeUTF8));
-        lbl_tickets_error->setText(QApplication::translate("MainWindow", "Loading...", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "System", 0, QApplication::UnicodeUTF8));
         menuWindows->setTitle(QApplication::translate("MainWindow", "Windows", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QApplication::translate("MainWindow", "Network", 0, QApplication::UnicodeUTF8));

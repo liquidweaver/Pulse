@@ -14,7 +14,8 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     namerecord.cpp \
     settings.cpp \
-    settingsmodel.cpp
+    settingsmodel.cpp \
+    metrosettings.cpp
 
 HEADERS  += mainwindow.h \
     namerecord.h \
@@ -22,7 +23,8 @@ HEADERS  += mainwindow.h \
     settings.h \
     settingsmodel.h \
     service.h \
-    global_defines.h
+    global_defines.h \
+    metrosettings.h
 
 FORMS    += mainwindow.ui \
     settings.ui

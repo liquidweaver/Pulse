@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_globals">
       <attribute name="title">
@@ -164,6 +164,70 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Zones</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QTableWidget" name="list_services">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
+         </property>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Zone Name</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame_2">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QPushButton" name="pushButton_3">
+            <property name="text">
+             <string>Add Zone</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="text">
+             <string>Remove Selected</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
@@ -232,7 +296,7 @@ p, li { white-space: pre-wrap; }
    <sender>pushButton</sender>
    <signal>clicked()</signal>
    <receiver>Settings</receiver>
-   <slot>RemoveSelected()</slot>
+   <slot>RemoveSelectedService()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>619</x>
@@ -244,9 +308,43 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>Settings</receiver>
+   <slot>AddZone()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>652</x>
+     <y>62</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>709</x>
+     <y>155</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>Settings</receiver>
+   <slot>RemoveSelectedZone()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>631</x>
+     <y>87</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>712</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>AddService()</slot>
-  <slot>RemoveSelected()</slot>
+  <slot>AddZone()</slot>
+  <slot>RemoveSelectedZone()</slot>
+  <slot>RemoveSelectedService()</slot>
  </slots>
 </ui>

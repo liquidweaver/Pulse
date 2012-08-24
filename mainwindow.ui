@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1050</width>
-    <height>602</height>
+    <width>1294</width>
+    <height>626</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,14 +17,8 @@
    <iconset resource="Resources.qrc">
     <normaloff>:/ico/PNG/pulse.png</normaloff>:/ico/PNG/pulse.png</iconset>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QSplitter::handle {
-qradialgradient(spread:repeat, cx:0.5, cy:0.5, radius:0.077, fx:0.5, fy:0.5, stop:0 rgba(0, 169, 255, 147), stop:0.497326 rgba(0, 0, 0, 147), stop:1 rgba(0, 169, 255, 147))
-
-     }</string>
-  </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QGroupBox" name="groupBox_2">
       <property name="font">
@@ -33,22 +27,14 @@ qradialgradient(spread:repeat, cx:0.5, cy:0.5, radius:0.077, fx:0.5, fy:0.5, sto
         <bold>true</bold>
        </font>
       </property>
-      <property name="title">
-       <string>Hot Tickets</string>
-      </property>
-      <property name="checkable">
-       <bool>false</bool>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QTableWidget" name="table_tickets">
-         <property name="styleSheet">
-          <string notr="true">QTableWidget {background-image: url(:/ico/PNG/64/Gnome-Emblem-Documents-64.png);
+      <property name="styleSheet">
+       <string notr="true">QTableWidget {background-image: url(:/ico/PNG/64/Gnome-Emblem-Documents-64.png);
 background-repeat:no-repeat;
 background-attachment:fixed;
 background-position:bottom right; 
 text-align:left;
 }
+
 QHeaderView::section
 {
      background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
@@ -58,8 +44,51 @@ QHeaderView::section
      border: 1px solid #6c6c6c;
 	 padding: 3px;
 	font-weight: bold;
+}</string>
+      </property>
+      <property name="title">
+       <string>Hot Tickets</string>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="lbl_tickets_error">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Loading...</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="table_tickets">
+         <property name="styleSheet">
+          <string notr="true">QTableWidget {background-image: url(:/ico/PNG/64/Gnome-Emblem-Documents-64.png);
+background-repeat:no-repeat;
+background-attachment:fixed;
+background-position:bottom right; 
+text-align:left;
 }
-</string>
+
+QHeaderView::section
+{
+     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 #A60000, stop: 0.5 #BF3030,
+                                       stop: 0.6 #BF3030, stop:1 #A60000);
+     color: white;
+     border: 1px solid #6c6c6c;
+	 padding: 3px;
+	font-weight: bold;
+}</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::Box</enum>
@@ -119,22 +148,6 @@ QHeaderView::section
          </column>
         </widget>
        </item>
-       <item>
-        <widget class="QLabel" name="lbl_tickets_error">
-         <property name="font">
-          <font>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Loading...</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
     </item>
@@ -145,7 +158,7 @@ QHeaderView::section
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1050</width>
+     <width>1294</width>
      <height>21</height>
     </rect>
    </property>
@@ -176,7 +189,7 @@ QHeaderView::section
     <set>QDockWidget::DockWidgetFeatureMask</set>
    </property>
    <attribute name="dockWidgetArea">
-    <number>2</number>
+    <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -237,6 +250,12 @@ QHeaderView::section
    </widget>
   </widget>
   <widget class="QDockWidget" name="dock_techs">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>1</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="minimumSize">
     <size>
      <width>400</width>
@@ -250,7 +269,7 @@ QHeaderView::section
     <number>8</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_2">
-    <layout class="QVBoxLayout" name="verticalLayout_5">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QGroupBox" name="groupBox_3">
        <property name="font">
@@ -343,6 +362,14 @@ text-align:left;}
      </item>
     </layout>
    </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
   </widget>
   <action name="actionSettings">
    <property name="icon">
@@ -504,8 +531,8 @@ text-align:left;}
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1043</x>
-     <y>316</y>
+     <x>648</x>
+     <y>601</y>
     </hint>
    </hints>
   </connection>

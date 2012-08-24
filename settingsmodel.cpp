@@ -1,10 +1,10 @@
 #include "settingsmodel.h"
 #include "service.h"
-#include <QSettings>
 #include <stdexcept>
 #include <QFileDialog>
 #include <QDesktopServices>
 #include <QDir>
+#include "metrosettings.h"
 //When subclassing QAbstractTableModel, you must implement rowCount(), columnCount(), and data().
 // Default implementations of the index() and parent() functions are provided by QAbstractTableModel. Well behaved models will also implement headerData().
 
@@ -18,8 +18,7 @@ ServicesModel::ServicesModel(QObject *parent) :
 }
 
 void ServicesModel::LoadServices() {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope,
-                            "metropark", "pulse");
+    MetroSettings settings;
 
     int size = settings.beginReadArray( "services" );
     for (int i=0; i < size; i++ ) {
@@ -35,8 +34,7 @@ void ServicesModel::LoadServices() {
 }
 
 void ServicesModel::SaveServices() {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope,
-                            "metropark", "pulse");
+    MetroSettings settings;
     settings.beginWriteArray("services");
     int i = 0;
     for ( QList<Service>::const_iterator svc_it = m_services.begin();

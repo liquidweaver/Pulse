@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'settings.ui'
 **
-** Created: Tue Aug 21 15:57:18 2012
+** Created: Fri Aug 24 14:01:29 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -27,6 +27,7 @@
 #include <QtGui/QSpacerItem>
 #include <QtGui/QTabWidget>
 #include <QtGui/QTableView>
+#include <QtGui/QTableWidget>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 
@@ -62,6 +63,14 @@ public:
     QSpacerItem *horizontalSpacer;
     QPushButton *btn_settings;
     QPushButton *pushButton;
+    QWidget *tab;
+    QHBoxLayout *horizontalLayout_2;
+    QTableWidget *list_services;
+    QFrame *frame_2;
+    QVBoxLayout *verticalLayout_4;
+    QPushButton *pushButton_3;
+    QPushButton *pushButton_2;
+    QSpacerItem *verticalSpacer;
     QDialogButtonBox *buttonBox;
 
     void setupUi(QDialog *Settings)
@@ -186,6 +195,46 @@ public:
         verticalLayout_3->addWidget(frame);
 
         tabWidget->addTab(tab_services, QString());
+        tab = new QWidget();
+        tab->setObjectName(QString::fromUtf8("tab"));
+        horizontalLayout_2 = new QHBoxLayout(tab);
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        list_services = new QTableWidget(tab);
+        if (list_services->columnCount() < 1)
+            list_services->setColumnCount(1);
+        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
+        list_services->setHorizontalHeaderItem(0, __qtablewidgetitem);
+        list_services->setObjectName(QString::fromUtf8("list_services"));
+        list_services->setAlternatingRowColors(true);
+        list_services->setSelectionMode(QAbstractItemView::MultiSelection);
+        list_services->horizontalHeader()->setStretchLastSection(true);
+
+        horizontalLayout_2->addWidget(list_services);
+
+        frame_2 = new QFrame(tab);
+        frame_2->setObjectName(QString::fromUtf8("frame_2"));
+        frame_2->setFrameShape(QFrame::StyledPanel);
+        frame_2->setFrameShadow(QFrame::Raised);
+        verticalLayout_4 = new QVBoxLayout(frame_2);
+        verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
+        pushButton_3 = new QPushButton(frame_2);
+        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
+
+        verticalLayout_4->addWidget(pushButton_3);
+
+        pushButton_2 = new QPushButton(frame_2);
+        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
+
+        verticalLayout_4->addWidget(pushButton_2);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_4->addItem(verticalSpacer);
+
+
+        horizontalLayout_2->addWidget(frame_2);
+
+        tabWidget->addTab(tab, QString());
 
         verticalLayout->addWidget(tabWidget);
 
@@ -201,9 +250,11 @@ public:
         QObject::connect(buttonBox, SIGNAL(accepted()), Settings, SLOT(accept()));
         QObject::connect(buttonBox, SIGNAL(rejected()), Settings, SLOT(reject()));
         QObject::connect(btn_settings, SIGNAL(clicked()), Settings, SLOT(AddService()));
-        QObject::connect(pushButton, SIGNAL(clicked()), Settings, SLOT(RemoveSelected()));
+        QObject::connect(pushButton, SIGNAL(clicked()), Settings, SLOT(RemoveSelectedService()));
+        QObject::connect(pushButton_3, SIGNAL(clicked()), Settings, SLOT(AddZone()));
+        QObject::connect(pushButton_2, SIGNAL(clicked()), Settings, SLOT(RemoveSelectedZone()));
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(Settings);
@@ -229,6 +280,11 @@ public:
         btn_settings->setText(QApplication::translate("Settings", "Add Service", 0, QApplication::UnicodeUTF8));
         pushButton->setText(QApplication::translate("Settings", "Remove Selected", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab_services), QApplication::translate("Settings", "Services", 0, QApplication::UnicodeUTF8));
+        QTableWidgetItem *___qtablewidgetitem = list_services->horizontalHeaderItem(0);
+        ___qtablewidgetitem->setText(QApplication::translate("Settings", "Zone Name", 0, QApplication::UnicodeUTF8));
+        pushButton_3->setText(QApplication::translate("Settings", "Add Zone", 0, QApplication::UnicodeUTF8));
+        pushButton_2->setText(QApplication::translate("Settings", "Remove Selected", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Settings", "Zones", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

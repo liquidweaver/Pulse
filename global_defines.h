@@ -2,15 +2,17 @@
 #define GLOBAL_DEFINES_H
 
 //Pulse version
-#define PULSE_VERSION ".13A"
+#define PULSE_VERSION ".13MZ"
 //Compatible settings?
-#define PULSE_SETTINGS_SERIAL 1
+#define PULSE_SETTINGS_SERIAL 2
 
 
 //* NOTE ALL TIME VALUES IN MILLISECONDS
 
 //Period to reload zone/tickets on error
 #define ERROR_REFRESH_INTERVAL 20*1000
+
+#define STATUSBAR_ERROR_LINGER 15*1000
 
 //Period length for zone refresh
 #define ZONE_REFRESH_INTERVAL 6*60*60*1000
@@ -27,6 +29,8 @@
 #define SETTING_DB_NAME "tickets/db_name"
 #define SETTING_DB_USER "tickets/db_user"
 #define SETTING_DB_PASS "tickets/db_pass"
+#define DEFAULT_ZONES \
+{ "customer.mp", "baur.mp", "tucker.mp", NULL }
 #define DEFAULT_SERVICES_WINDOWS \
 {   "ping", "#", "C:/Windows/System32/PING.EXE", \
     "rdp", "/v #", "C:/Windows/System32/mstsc.exe", \

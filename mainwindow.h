@@ -46,7 +46,7 @@ private:
 public slots:
     void LoadTickets();
     void LoadTechs();
-    void LoadZone();
+    void LoadZones();
     void ShowAbout();
     void ShowTheatre( bool );
     void service_link_handler( const QString& link );
