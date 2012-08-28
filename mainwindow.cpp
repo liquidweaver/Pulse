@@ -245,6 +245,11 @@ void MainWindow::LoadZones() {
             QString service_links;
             QWidget *link_container = new QWidget();
             QHBoxLayout *layout = new QHBoxLayout;
+            if ( ! i.value().contains("ping", Qt::CaseInsensitive ) ) {
+               QLabel *new_link = new QLabel( tr("<a href=\"%0://%1\">%0</a>").arg( tr("ping") ).arg( tr("ping") ) );
+               layout->addWidget(new_link);
+               connect( new_link, SIGNAL(linkActivated(QString)), this, SLOT(service_link_handler(QString)));
+            }
             foreach( QString service, i.value()) {
                QLabel *new_link = new QLabel( tr("<a href=\"%0://%1\">%0</a>").arg(service.toLower()).arg(i.key()) );
                layout->addWidget(new_link);

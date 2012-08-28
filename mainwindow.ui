@@ -492,7 +492,7 @@ text-align:left;}
    <sender>actionReload_Network</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>LoadZone()</slot>
+   <slot>LoadZones()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -531,8 +531,8 @@ text-align:left;}
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>648</x>
-     <y>601</y>
+     <x>315</x>
+     <y>320</y>
     </hint>
    </hints>
   </connection>
@@ -572,10 +572,10 @@ text-align:left;}
  <slots>
   <slot>LoadTickets()</slot>
   <slot>ShowSettings()</slot>
-  <slot>LoadZone()</slot>
   <slot>Quit()</slot>
   <slot>ShowAbout()</slot>
   <slot>NetworkVisibilityChanged(bool)</slot>
   <slot>ShowTheatre(bool)</slot>
+  <slot>LoadZones()</slot>
  </slots>
 </ui>
