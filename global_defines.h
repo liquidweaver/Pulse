@@ -32,14 +32,21 @@
 #define DEFAULT_ZONES \
 { "customer.mp", "baur.mp", "tucker.mp", NULL }
 #define DEFAULT_SERVICES_WINDOWS \
-{   "ping", "#", "C:/Windows/System32/PING.EXE", \
-    "rdp", "/v #", "C:/Windows/System32/mstsc.exe", \
-    "smb", "\\#", "C:/Windows/System32/explorer.exe", NULL }
+{  "ping", "#", "C:/Windows/System32/PING.EXE", \
+   "rdp", "/v #", "C:/Windows/System32/mstsc.exe", \
+   "netbios-ssn", "\\\\#", "C:/Windows/System32/explorer.exe", \
+   "telnet", "-telnet #", "C:/Program Files (x86)/PuTTY/putty.exe", \
+   "ssh", "-ssh #", "C:/Program Files (x86)/PuTTY/putty.exe", \
+   "shell", "-rlogin #", "C:/Program Files (x86)/PuTTY/putty.exe", \
+   "http", "#", "C:/Program Files/Internet Explorer/iexplore.exe", \
+   "https", "#", "C:/Program Files/Internet Explorer/iexplore.exe", \
+   NULL }
 #define DEFAULT_SERVICES_LINUX \
-{   "ping", "-x /bin/ping -c5 #", "/usr/bin/gnome-terminal", \
-    "rdp", "#", "/usr/bin/rdesktop", \
-    "smb", "smb://#", "/usr/bin/nautilus", \
-    "vnc", "#", "/usr/bin/vncviewer", \
-    "ssh", "-x /usr/bin/ssh -l administrator #", "/usr/bin/gnome-terminal", NULL }
+{  "ping", "-x /bin/ping -c5 #", "/usr/bin/gnome-terminal", \
+   "rdp", "#", "/usr/bin/rdesktop", \
+   "netbios-ssn", "smb://#", "/usr/bin/nautilus", \
+   "vnc", "#", "/usr/bin/vncviewer", \
+   "ssh", "-x /usr/bin/ssh -l administrator #", "/usr/bin/gnome-terminal", \
+   NULL }
 
 #endif // GLOBAL_DEFINES_H
