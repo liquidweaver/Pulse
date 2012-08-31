@@ -2,7 +2,7 @@
 #define GLOBAL_DEFINES_H
 
 //Pulse version
-#define PULSE_VERSION ".14MZ"
+#define PULSE_VERSION ".15TZ"
 //Compatible settings?
 #define PULSE_SETTINGS_SERIAL 2
 

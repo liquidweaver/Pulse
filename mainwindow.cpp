@@ -300,7 +300,7 @@ void MainWindow::LoadTickets() {
          throw QString( "Database secret not set.");
       }
       session sql( tr("postgresql://dbname=%0 host=%1 user=%2 password=%3").arg(db_name).arg(merp_host).arg(db_user).arg(db_pass).toStdString() );
-      rowset<row> rs = (sql.prepare << "SELECT project_task.weight,crm_metro_helpdesk.ticket_no, project_task.name, res_users.name, res_partner.name, ru.name, project_task.worker_start_date "
+      rowset<row> rs = (sql.prepare << "SELECT project_task.weight,crm_metro_helpdesk.ticket_no, project_task.name, res_users.name, res_partner.name, ru.name, project_task.worker_start_date AT TIME ZONE 'UTC' "
                         "FROM crm_metro_helpdesk INNER JOIN project_task ON project_task.helpdesk_id = crm_metro_helpdesk.id "
                         "INNER JOIN res_users ON res_users.id = project_task.user_id INNER JOIN res_partner ON res_partner.id = project_task.partner_id "
                         "LEFT JOIN res_users as ru ON ru.id = project_task.worker_user_id "
@@ -395,7 +395,7 @@ void MainWindow::LoadTechs() {
                         "INNER JOIN res_groups g ON "
                         "    g.id = res_groups_users_rel.gid AND g.name = 'Pulse' "
                         "INNER JOIN "
-                        "    (SELECT worker_user_id, id, name, weight, partner_id, worker_start_date wstart FROM project_task "
+                        "    (SELECT worker_user_id, id, name, weight, partner_id, worker_start_date AT TIME ZONE 'UTC' wstart FROM project_task "
                         "    WHERE worker_user_id IS NOT NULL AND state='open' ) t "
                         "    ON t.worker_user_id = u.id "
                         "INNER JOIN res_partner p ON p.id = t.partner_id "
