@@ -27,11 +27,14 @@
 #include "global_defines.h"
 #include "metrosettings.h"
 
+#define MULTILINE(...) #__VA_ARGS__
+
 typedef QPair<QString, QString> QStringPair;
 MainWindow::MainWindow(QWidget *parent) :
    QMainWindow(parent),
    ui(new Ui::MainWindow)
 {
+   resize = false;
    ui->setupUi(this);
    QStandardItemModel* model = new QStandardItemModel();
    ui->treeView->setModel( model  );
@@ -90,6 +93,14 @@ MainWindow::MainWindow(QWidget *parent) :
       //line->setFrameShape(QFrame::Panel);
       //line->setFrameShadow(QFrame::Raised);
       //layout->addWidget(line);
+
+
+      ui->table_techs->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+      ui->table_techs->horizontalHeader()->setStretchLastSection(true);
+      ui->table_techs->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      ui->table_tickets->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+      ui->table_tickets->horizontalHeader()->setStretchLastSection(true);
+      ui->table_tickets->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
       LoadZones();
       LoadTickets();
       LoadTechs();
@@ -300,14 +311,28 @@ void MainWindow::LoadTickets() {
          throw QString( "Database secret not set.");
       }
       session sql( tr("postgresql://dbname=%0 host=%1 user=%2 password=%3").arg(db_name).arg(merp_host).arg(db_user).arg(db_pass).toStdString() );
-      rowset<row> rs = (sql.prepare << "SELECT project_task.weight,crm_metro_helpdesk.ticket_no, project_task.name, res_users.name, res_partner.name, ru.name, project_task.worker_start_date AT TIME ZONE 'UTC' "
-                        "FROM crm_metro_helpdesk INNER JOIN project_task ON project_task.helpdesk_id = crm_metro_helpdesk.id "
-                        "INNER JOIN res_users ON res_users.id = project_task.user_id INNER JOIN res_partner ON res_partner.id = project_task.partner_id "
-                        "LEFT JOIN res_users as ru ON ru.id = project_task.worker_user_id "
-                        "WHERE project_task.state = 'open' AND "
-                        "project_task.weight > "
-                        "    (SELECT value_integer FROM ir_property WHERE name = 'property_helpdesk_weight_hot_threshold') "
-                        "ORDER BY project_task.weight DESC;");
+      //note: the timezone stuff is... tricky, and is highly dependent on the pulse role's preferred time format...  egh.
+      const char *query = MULTILINE(
+select pt.weight,cmh.ticket_no, pt.name, ruo.name, rp.name, foo.name, foo.time_spent, case when bar.escalated then bar.escalated else false end as escalated
+from crm_metro_helpdesk as cmh 
+inner join project_task as pt on pt.helpdesk_id = cmh.id 
+inner join res_users as ruo on ruo.id = pt.user_id 
+inner join res_partner as rp on rp.id = pt.partner_id 
+left join res_users as ruw on ruw.id = pt.worker_user_id 
+left join (select task_id,
+           string_agg(ru.name, E', \r\n') as name,
+           (timestamp without time zone '1970-01-01' at time zone 'utc') + sum(now() - ptwr.create_date at time zone 'utc') as time_spent
+       from project_task_worker_ref as ptwr inner join res_users as ru on ru.id = ptwr.user_id GROUP BY task_id) as foo on foo.task_id = pt.id
+left join (select pt.id, true as escalated from project_task as pt 
+    inner join project_task_tag_rel as pttr on pttr.task_id = pt.id 
+    where pttr.tag_id in (select id from project_task_tag where key = 'escalation') and weight > 0) as bar on bar.id = pt.id
+where pt.state = 'open' AND
+pt.weight > 
+    (select value_integer from ir_property where name = 'property_helpdesk_weight_hot_threshold') 
+order by pt.weight desc;
+);
+      
+      rowset<row> rs = (sql.prepare << query);
       // iteration through the resultset:
       ui->table_tickets->clearContents();
       ui->table_tickets->setRowCount(0);
@@ -318,6 +343,7 @@ void MainWindow::LoadTickets() {
          int priority;
          string tech, description, ticket_id, customer_name, worker_name;
          std::tm worker_start;
+	 int escalated;
 
          // dynamic data extraction from each row:
          time_t default_time_t = 0;
@@ -329,15 +355,19 @@ void MainWindow::LoadTickets() {
          customer_name = row.get<string>(4);
          worker_name = row.get<string>(5, string("") );
          worker_start = row.get<std::tm>(6, *default_tm );
-         qint64 mins = QDateTimeFromTM( worker_start ).msecsTo( QDateTime::currentDateTime() ) / 1000 / 60;
+         escalated = row.get<int>(7);
+         //qint64 mins = QDateTimeFromTM( worker_start ).msecsTo( QDateTime::currentDateTime() ) / 1000 / 60;
+         qint64 mins = QDateTimeFromTM( worker_start ).toMSecsSinceEpoch() / 1000 / 60;
          qint64 hours = mins / 60;
          qint64 minutes = mins % 60;
+         QString minutes_formatted = minutes >= 10 ? QString("%0").arg(minutes) : QString("0%0").arg(minutes);
          QString duration;
          if ( !worker_name.empty() ){
             duration = (hours > 0)
-                       ? tr("%0:%1").arg(hours).arg(minutes)
+                       ? tr("%0:%1").arg(hours).arg(minutes_formatted)
                        : tr("%0 minute(s)").arg(mins);
          }
+
          ui->table_tickets->insertRow(row_id);
          ui->table_tickets->setItem(row_id, 0, new QTableWidgetItem( QString("%0").arg(priority) ) );
          ui->table_tickets->setItem(row_id, 1, new QTableWidgetItem( QString(ticket_id.c_str())));
@@ -346,9 +376,20 @@ void MainWindow::LoadTickets() {
          ui->table_tickets->setItem(row_id, 4, new QTableWidgetItem( duration ) );
          ui->table_tickets->setItem(row_id, 5, new QTableWidgetItem( QString(customer_name.c_str())));
          ui->table_tickets->setItem(row_id, 6, new QTableWidgetItem( QString(description.c_str())));
+
+         if(escalated){
+             for(int i=0; i <=6; i++) {
+                ui->table_tickets->item(row_id,i)->setBackgroundColor(QColor::fromRgb(255, 255, 153));  //Qt::yellow
+             }
+         }
          row_id++;
+
       }
       ui->lbl_tickets_error->hide();
+      if(this->resize){
+        ui->table_tickets->resizeColumnsToContents();
+        ui->table_tickets->resizeRowsToContents();
+      }
       ui->table_tickets->show();
       m_ticket_timer.setInterval( TICKET_REFRESH_INTERVAL );
       if ( row_id > 0 )
@@ -389,17 +430,28 @@ void MainWindow::LoadTechs() {
          throw QString( "Database secret not set.");
       }
       session sql( tr("postgresql://dbname=%0 host=%1 user=%2 password=%3").arg(db_name).arg(merp_host).arg(db_user).arg(db_pass).toStdString() );
-      rowset<row> rs = (sql.prepare << "SELECT u.name, t.name, p.name, t.weight, t.wstart "
-                        "FROM public.res_users u "
-                        "INNER JOIN res_groups_users_rel ON res_groups_users_rel.uid = u.id "
-                        "INNER JOIN res_groups g ON "
-                        "    g.id = res_groups_users_rel.gid AND g.name = 'Pulse' "
-                        "INNER JOIN "
-                        "    (SELECT worker_user_id, id, name, weight, partner_id, worker_start_date AT TIME ZONE 'UTC' wstart FROM project_task "
-                        "    WHERE worker_user_id IS NOT NULL AND state='open' ) t "
-                        "    ON t.worker_user_id = u.id "
-                        "INNER JOIN res_partner p ON p.id = t.partner_id "
-                        "ORDER BY t.wstart ASC");
+      
+      const char *query = MULTILINE(
+select ru.name, t.name, rp.name, t.weight, t.wstart, t.escalated
+  from public.res_users as ru 
+  inner join res_groups_users_rel as rgur on rgur.uid = ru.id 
+  inner join res_groups as rg on 
+      rg.id = rgur.gid AND rg.name = 'Pulse'
+  inner join 
+      (select ptwr.user_id, pt.id, name, weight, partner_id, ptwr.create_date at time zone 'UTC' as wstart, 
+	case when bar.escalated then bar.escalated else false end as escalated 
+      from project_task_worker_ref as ptwr
+      inner join project_task as pt on pt.id = ptwr.task_id
+      left join (select pt.id, true as escalated from project_task as pt 
+	inner join project_task_tag_rel as pttr on pttr.task_id = pt.id 
+	where pttr.tag_id in (select id from project_task_tag where key = 'escalation') and weight > 0) as bar on bar.id = pt.id
+      WHERE pt.state='open' ) as t 
+      on t.user_id = ru.id 
+  inner join res_partner rp on rp.id = t.partner_id 
+  order by t.wstart ASC
+);      
+      
+      rowset<row> rs = (sql.prepare << query);
       // iteration through the resultset:
       ui->table_techs->clearContents();
       ui->table_techs->setRowCount(0);
@@ -409,6 +461,7 @@ void MainWindow::LoadTechs() {
          int priority;
          string tech, description, customer_name;
          std::tm worker_start;
+	 int escalated;
 
          // dynamic data extraction from each row:
          time_t default_time_t = 0;
@@ -419,13 +472,15 @@ void MainWindow::LoadTechs() {
          customer_name = row.get<string>(2);
          priority = row.get<int>(3);
          worker_start = row.get<std::tm>(4, *default_tm );
+	 escalated = row.get<int>(5);
 
          qint64 mins = QDateTimeFromTM( worker_start ).msecsTo( QDateTime::currentDateTime() ) / 1000 / 60;
          qint64 hours = mins / 60;
          qint64 minutes = mins % 60;
+	 QString minutes_formatted = minutes >= 10 ? QString("%0").arg(minutes) : QString("0%0").arg(minutes);
          QString duration;
          duration = (hours > 0)
-                    ? tr("%0:%1").arg(hours).arg(minutes)
+                    ? tr("%0:%1").arg(hours).arg(minutes_formatted)
                     : tr("%0 minute(s)").arg(mins);
 
          ui->table_techs->insertRow(row_id);
@@ -434,9 +489,20 @@ void MainWindow::LoadTechs() {
          ui->table_techs->setItem(row_id, 2, new QTableWidgetItem( duration ) );
          ui->table_techs->setItem(row_id, 3, new QTableWidgetItem( QString(customer_name.c_str())));
          ui->table_techs->setItem(row_id, 4, new QTableWidgetItem( QString(description.c_str())));
+
+         if(escalated){
+             for(int i=0; i <=4; i++) {
+                ui->table_techs->item(row_id,i)->setBackgroundColor(QColor::fromRgb(255, 255, 153));  //Qt::yellow
+             }
+         }
+         
          row_id++;
       }
       ui->lbl_techs_error->hide();
+      if(this->resize){
+        ui->table_techs->resizeColumnsToContents();
+        ui->table_techs->resizeRowsToContents();
+      }
       ui->table_techs->show();
       m_techs_timer.setInterval( TECH_REFRESH_INTERVAL );
    }
@@ -591,6 +657,16 @@ void MainWindow::ShowTheatre(bool show ) {
       this->setStyleSheet( "" );
    }
 
+}
+
+void MainWindow::AutoResize(bool resize) {
+    this->resize = resize;
+    if (resize) {   //do initial resize to kick things off
+        ui->table_techs->resizeColumnsToContents();
+        ui->table_techs->resizeRowsToContents();
+        ui->table_tickets->resizeColumnsToContents();
+        ui->table_tickets->resizeRowsToContents();
+    }
 }
 
 void MainWindow::TrayClicked(QSystemTrayIcon::ActivationReason reason) {

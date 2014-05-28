@@ -35,6 +35,7 @@ private:
     QString RunExternal( const QString&, const QString& );
     void SetServiceLocation(const QString &service_name);
     Ui::MainWindow *ui;
+    bool resize;
     QSystemTrayIcon* m_tray_icon;
     void SaveServices( const QMap<QString,Service>& service_map );
     QMap<QString, Service> LoadServices();
@@ -49,6 +50,7 @@ public slots:
     void LoadZones();
     void ShowAbout();
     void ShowTheatre( bool );
+    void AutoResize( bool );
     void service_link_handler( const QString& link );
     void service_url_handler( const QUrl& url );
     void ShowSettings();

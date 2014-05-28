@@ -159,7 +159,7 @@ QHeaderView::section
      <x>0</x>
      <y>0</y>
      <width>1294</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -180,6 +180,7 @@ QHeaderView::section
     <addaction name="actionTechs"/>
     <addaction name="separator"/>
     <addaction name="actionTheatre_View"/>
+    <addaction name="actionAuto_Resize"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuWindows"/>
@@ -259,7 +260,7 @@ QHeaderView::section
    <property name="minimumSize">
     <size>
      <width>400</width>
-     <height>188</height>
+     <height>197</height>
     </size>
    </property>
    <property name="features">
@@ -450,6 +451,14 @@ text-align:left;}
     <string>Theatre View</string>
    </property>
   </action>
+  <action name="actionAuto_Resize">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Auto-Resize</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -568,6 +577,22 @@ text-align:left;}
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionAuto_Resize</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>AutoResize(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>646</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>LoadTickets()</slot>
@@ -577,5 +602,6 @@ text-align:left;}
   <slot>NetworkVisibilityChanged(bool)</slot>
   <slot>ShowTheatre(bool)</slot>
   <slot>LoadZones()</slot>
+  <slot>AutoResize(bool)</slot>
  </slots>
 </ui>
